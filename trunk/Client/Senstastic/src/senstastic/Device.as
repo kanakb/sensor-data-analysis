@@ -11,6 +11,7 @@ package senstastic
 	public class Device
 	{
 		private static const DEVICE_ID_FILE_NAME:String = "deviceId";
+		private static const DEVICE_ID_FILE:File = File.applicationStorageDirectory.resolvePath(DEVICE_ID_FILE_NAME);
 		
 		public function Device()
 		{
@@ -19,12 +20,12 @@ package senstastic
 
 		public static function get deviceId():String
 		{
-			var deviceId:String = readFile(DEVICE_ID_FILE_NAME);
+			var deviceId:String = FileUtility.readObject(DEVICE_ID_FILE) as String;
 			
 			if (!deviceId)
 			{
 				deviceId = UIDUtil.createUID();
-				writeFile(DEVICE_ID_FILE_NAME, deviceId);
+				FileUtility.writeObject(DEVICE_ID_FILE, deviceId);
 			}
 			
 			return deviceId;
@@ -35,29 +36,6 @@ package senstastic
 			return Capabilities.os;
 		}
 		
-		private static function writeFile(fileName:String, fileContents:String):void
-		{
-			var file:File = File.applicationStorageDirectory.resolvePath(fileName);
-			
-			var fileStream:FileStream = new FileStream();
-			fileStream.open(file, FileMode.WRITE);
-			fileStream.writeUTF(fileContents);
-			fileStream.close();
-		}
-		
-		private static function readFile(fileName:String):String
-		{
-			var file:File = File.applicationStorageDirectory.resolvePath(fileName);
-			
-			if (!file.exists)
-				return null;
-			
-			var fileStream:FileStream = new FileStream();
-			fileStream.open(file, FileMode.READ);
-			var fileContents:String = fileStream.readUTF();
-			fileStream.close();
-			
-			return fileContents;
-		}
+
 	}
 }
