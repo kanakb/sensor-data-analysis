@@ -22,6 +22,24 @@
 				measurement.numericSensorData = 40.23;
 				measurement.sensorType = "velocity";
 				trace(measurement.xmlString);
+				
+				var myText:String = "";
+				if (NetworkInfo.isSupported)
+				{
+					for each (var nint:NetworkInterface in NetworkInfo.networkInfo.findInterfaces())
+					{
+						myText += ("\n"+nint.displayName);
+						if (nint.active)
+						{
+							myText += (": ACTIVE");
+						}
+						else
+						{
+							myText += (": N/A");
+						}
+					}
+				}
+				trace(myText);
 			}
 			
 		]]>
