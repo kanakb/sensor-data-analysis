@@ -1,47 +1,63 @@
 package senstastic
 {
+	import flash.filesystem.File;
+	import flash.filesystem.FileMode;
+	import flash.filesystem.FileStream;
 	import flash.net.NetworkInterface;
+	import flash.system.Capabilities;
+	
+	import mx.utils.UIDUtil;
 
 	public class DeviceInfo
 	{
-		import flash.net.NetworkInfo;
+		private static const DEVICE_ID_FILE_NAME = "deviceId";
 		
 		public function DeviceInfo()
 		{
 			
 		}
-		
-		/**
-		 * Taken from: http://www.adobe.com/devnet/air/flex/articles/retrieving_network_interfaces.html
-		 **/
-		public static function traceInterfaces():void
+
+		public static function get deviceId():String
 		{
-			var results:Vector.<NetworkInterface> =
-				NetworkInfo.networkInfo.findInterfaces();
+			var deviceId:String = readFile(DEVICE_ID_FILE_NAME);
 			
-			for (var i:int=0; i<results.length; i++)
+			if (!deviceId)
 			{
-				var output:String = output
-					+ "Name: " + results[i].name + "\n"
-					+ "DisplayName: " + results[i].displayName + "\n"
-					+ "MTU: " + results[i].mtu + "\n"
-					+ "HardwareAddr: " + results[i].hardwareAddress + "\n"
-					+ "Active: "  + results[i].active + "\n";
-				
-				
-				for (var j:int=0; j<results[i].addresses.length; j++)
-				{
-					output = output
-						+ "Addr: " + results[i].addresses[j].address + "\n"
-						+ "Broadcast: " + results[i].addresses[j].broadcast + "\n"
-						+ "PrefixLength: " + results[i].addresses[j].prefixLength + "\n"
-						+ "IPVersion: " + results[i].addresses[j].ipVersion + "\n";
-				}
-				
-				output = output + "\n";
-				
-				trace(output);
+				deviceId = UIDUtil.createUID();
+				writeFile(DEVICE_ID_FILE_NAME, deviceId);
 			}
+			
+			return deviceId;
+		}
+		
+		public static function get deviceType():String
+		{
+			return Capabilities.os;
+		}
+		
+		private function writeFile(fileName:String, fileContents:String)
+		{
+			var file:File = File.applicationStorageDirectory.resolvePath(fileName);
+			
+			var fileStream:FileStream = new FileStream();
+			fileStream.open(file, FileMode.WRITE);
+			fileStream.writeUTF(fileContents);
+			fileStream.close();
+		}
+		
+		private function readFile(fileName:String):void
+		{
+			var file:File = File.applicationStorageDirectory.resolvePath(fileName);
+			
+			if (!file.exists)
+				return null;
+			
+			var fileStream:FileStream = new FileStream();
+			fileStream.open(file, FileMode.READ);
+			var fileContents:String = fileStream.readUTF();
+			fileContents.close();
+			
+			return fileContents;
 		}
 	}
 }
