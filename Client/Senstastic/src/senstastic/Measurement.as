@@ -9,13 +9,23 @@ package senstastic
 
 	public class Measurement
 	{
-		public var deviceType:String;
+		public var deviceKind:String;
 		public var deviceId:String;
-		public var measurementTime:int;
+		public var measurementTime:Number;
 		public var latitude:Number;
 		public var longitude:Number;
 		public var sensorType:String;
 		private var _sensorData:String;
+		
+		public function Measurement(sensorType:String, sensorData:*)
+		{
+			this.sensorType = sensorType;
+			this.sensorData = sensorData;
+		
+			deviceKind = Device.deviceKind;
+			deviceId = Device.deviceId;
+			measurementTime = unixTime;
+		}
 		
 		public function get sensorData():String
 		{
@@ -49,9 +59,10 @@ package senstastic
 			return xmlString;
 		}
 		
-		public function Measurement()
+		private static function get unixTime():Number
 		{
-			
+			var date:Date = new Date();
+			return date.time / 1000;
 		}
 	}
 }
