@@ -31,5 +31,10 @@ package senstastic
 			
 			return object;
 		}
+		
+		public static function destroyObject(file:File):void
+		{
+			file.deleteFile();
+		}
 	}
 }

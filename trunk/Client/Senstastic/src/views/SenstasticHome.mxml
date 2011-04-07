@@ -8,23 +8,18 @@
 		<![CDATA[
 			import mx.utils.UIDUtil;
 			
+			import samples.RandomSensor;
+			
 			import senstastic.Device;
 			import senstastic.Measurement;
+			import senstastic.Senstastic;
+			
+			private var randomSensor:RandomSensor;
 			
 			private function onCreationComplete(event:Event):void
 			{
-				var measurement:Measurement = new Measurement("volume", 105.3);
-				measurement.latitude = 45.3241234;
-				measurement.longitude = 173.23412349;
-				measurement.measurementTime = 123456789;
-				//var binarySensorData:ByteArray = new ByteArray();
-				//binarySensorData.writeFloat(40.23);
-				//measurement.binarySensorData = binarySensorData;
-				measurement.sensorData = 40.23;
-				measurement.sensorType = "velocity";
-				trace(measurement.xmlString);
-				
-				trace(Capabilities.os);
+				Senstastic.measurementDestinationURL = "http://dudeitworks.com";
+				randomSensor = new RandomSensor();
 			}
 			
 		]]>

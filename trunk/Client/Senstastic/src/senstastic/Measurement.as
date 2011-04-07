@@ -5,6 +5,9 @@ package senstastic
 	import flash.xml.XMLDocument;
 	import flash.xml.XMLNode;
 	
+	import mx.rpc.events.FaultEvent;
+	import mx.rpc.events.ResultEvent;
+	import mx.rpc.http.HTTPService;
 	import mx.rpc.xml.SimpleXMLEncoder;
 	import mx.utils.Base64Encoder;
 	import mx.utils.UIDUtil;
@@ -20,7 +23,7 @@ package senstastic
 		public var measurementTime:Number;
 		public var latitude:Number;
 		public var longitude:Number;
-		public var sensorType:String;
+		public var sensorKind:String;
 		private var _sensorData:String;
 		
 		public function get sensorData():String
@@ -40,19 +43,13 @@ package senstastic
 			// Convert primitive to string.
 			else
 			{
-				_sensorData = value.toString;
+				_sensorData = value.toString();
 			}
 		}
 		
-		public function get xmlString():String 
+		private function get file():File
 		{
-			var qualifiedName:QName = new QName("measurement");
-			var xmlDocument:XMLDocument = new XMLDocument();
-			var simpleXMLEncoder:SimpleXMLEncoder = new SimpleXMLEncoder(xmlDocument);
-			var xmlNode:XMLNode = simpleXMLEncoder.encodeValue(this, qualifiedName, xmlDocument);
-			var xml:XML = new XML(xmlDocument.toString());
-			var xmlString:String = xml.toXMLString();
-			return xmlString;
+			return SAVED_MEASUREMENTS_DIRECTORY.resolvePath(measurementId);
 		}
 		
 		private static function get unixTime():Number
@@ -61,9 +58,9 @@ package senstastic
 			return date.time / 1000;
 		}
 		
-		public function Measurement(sensorType:String, sensorData:*)
+		public function Measurement(sensorKind:String, sensorData:*)
 		{
-			this.sensorType = sensorType;
+			this.sensorKind = sensorKind;
 			this.sensorData = sensorData;
 			
 			measurementId = UIDUtil.createUID();
@@ -88,8 +85,30 @@ package senstastic
 		
 		public function save():void
 		{
-			FileUtility.writeObject(SAVED_MEASUREMENTS_DIRECTORY.resolvePath(measurementId), this);
+			FileUtility.writeObject(file, this);
+		}
+		
+		public function destroy():void
+		{
+			FileUtility.destroyObject(file);
 		}
 
+		public function send(url:String):void
+		{
+			var service:HTTPService = new HTTPService();
+			service.url = url;
+			service.method = "POST";
+			service.send(this);
+		}
+		
+		private function onSendSuccess(event:ResultEvent):void
+		{
+			destroy();
+		}
+		
+		private function onSendFailure(event:FaultEvent):void
+		{
+			// Try again later.
+		}
 	}
 }
