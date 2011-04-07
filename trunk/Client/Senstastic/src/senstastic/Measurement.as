@@ -15,18 +15,27 @@ package senstastic
 		public var latitude:Number;
 		public var longitude:Number;
 		public var sensorType:String;
-		public var sensorData:String;
+		private var _sensorData:String;
 		
-		public function set numericSensorData(value:Number):void
+		public function get sensorData():String
 		{
-			sensorData = value.toString();
+			return _sensorData;
 		}
 		
-		public function set binarySensorData(value:ByteArray):void
+		public function set sensorData(value:*):void
 		{
-			var encoder:Base64Encoder = new Base64Encoder();
-			encoder.encodeBytes(value);
-			sensorData = encoder.toString();
+			// Encode binary data.
+			if (value is ByteArray)
+			{
+				var encoder:Base64Encoder = new Base64Encoder();
+				encoder.encodeBytes(value);
+				_sensorData = encoder.toString();
+			}
+			// Convert primitive to string.
+			else
+			{
+				_sensorData = value.toString;
+			}
 		}
 		
 		public function get xmlString():String 
