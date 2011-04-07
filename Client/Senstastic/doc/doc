@@ -1,0 +1,2 @@
+Sensor dispatches measurementTaken events, with a Measurement.
+MeasurementManager receives event. Transmits the measurement if it can. Otherwise stores it. When the network changes, tries to push out stored measurements if appropriate.
