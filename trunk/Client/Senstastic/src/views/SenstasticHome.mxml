@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		title="Home"
+		creationComplete="onCreationComplete(event)">
+
+	<fx:Script>
+		<![CDATA[
+			import senstastic.Measurement;
+			
+			private function onCreationComplete(event:Event):void
+			{
+				var measurement:Measurement = new Measurement();
+				measurement.deviceId = "123";
+				measurement.deviceType = "Nexus One";
+				measurement.latitude = 45.3241234;
+				measurement.longitude = 173.23412349;
+				measurement.measurementTime = 123456789;
+				//var binarySensorData:ByteArray = new ByteArray();
+				//binarySensorData.writeFloat(40.23);
+				//measurement.binarySensorData = binarySensorData;
+				measurement.numericSensorData = 40.23;
+				measurement.sensorType = "velocity";
+				trace(measurement.xmlString);
+			}
+			
+		]]>
+	</fx:Script>
+	
+</s:View>
