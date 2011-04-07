@@ -8,11 +8,11 @@ package senstastic
 	
 	import mx.utils.UIDUtil;
 
-	public class DeviceInfo
+	public class Device
 	{
-		private static const DEVICE_ID_FILE_NAME = "deviceId";
+		private static const DEVICE_ID_FILE_NAME:String = "deviceId";
 		
-		public function DeviceInfo()
+		public function Device()
 		{
 			
 		}
@@ -30,12 +30,12 @@ package senstastic
 			return deviceId;
 		}
 		
-		public static function get deviceType():String
+		public static function get deviceKind():String
 		{
 			return Capabilities.os;
 		}
 		
-		private function writeFile(fileName:String, fileContents:String)
+		private static function writeFile(fileName:String, fileContents:String):void
 		{
 			var file:File = File.applicationStorageDirectory.resolvePath(fileName);
 			
@@ -45,7 +45,7 @@ package senstastic
 			fileStream.close();
 		}
 		
-		private function readFile(fileName:String):void
+		private static function readFile(fileName:String):String
 		{
 			var file:File = File.applicationStorageDirectory.resolvePath(fileName);
 			
@@ -55,7 +55,7 @@ package senstastic
 			var fileStream:FileStream = new FileStream();
 			fileStream.open(file, FileMode.READ);
 			var fileContents:String = fileStream.readUTF();
-			fileContents.close();
+			fileStream.close();
 			
 			return fileContents;
 		}
