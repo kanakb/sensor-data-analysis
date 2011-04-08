@@ -42,17 +42,19 @@ class Importer(webapp.RequestHandler):
             for m in measurements:
                 elementTree = ElementTree(m)
                 mEntry = Measurement()
-                mEntry.deviceId = elementTree.findtext('deviceId')
+                mEntry.deviceId = senselib.toHash(elementTree.findtext('deviceId'))
                 mEntry.deviceKind = elementTree.findtext('deviceKind')
                 mEntry.latitude = float(elementTree.findtext('latitude'))
                 mEntry.longitude = float(elementTree.findtext('longitude'))
                 mEntry.sensorKind = elementTree.findtext('sensorKind')
                 mEntry.sensorData = elementTree.findtext('sensorData')
                 # convert unix time to datetime
-                #utime = elementTree.findtext('measurementTime')
-                # todo: actually do the conversion
+                utime = elementTree.findtext('measurementTime')
+                mEntry.time = senselib.toDateTime(utime)
                 # save to datastore
-                #smEntry.put()
+                mEntry.put()
+                
+            self.response.out.write("SUCCESS")
                 
         except (KeyError, CapabilityDisabledError):
             self.response.out.write("FAILURE")
