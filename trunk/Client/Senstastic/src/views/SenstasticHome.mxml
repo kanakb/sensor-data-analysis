@@ -12,13 +12,12 @@
 			
 			import senstastic.Device;
 			import senstastic.Measurement;
-			import senstastic.Senstastic;
 			
 			private var randomSensor:RandomSensor;
 			
 			private function onCreationComplete(event:Event):void
 			{
-				Senstastic.measurementDestinationURL = "http://dudeitworks.com";
+				Measurement.init("http://dudeitworks.com");
 				randomSensor = new RandomSensor();
 			}
 			
