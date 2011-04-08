@@ -4,5 +4,9 @@ runtime: python
 api_version: 1
 
 handlers:
+- url: /import
+  script: import.py
+- url: /insert
+  script: test_tools/insert.py
 - url: /.*
   script: error.py
