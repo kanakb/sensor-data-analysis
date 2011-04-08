@@ -1,5 +1,7 @@
 package senstastic
 {
+	import flash.events.Event;
+	import flash.events.GeolocationEvent;
 	import flash.filesystem.File;
 	import flash.utils.ByteArray;
 	import flash.xml.XMLDocument;
@@ -14,17 +16,21 @@ package senstastic
 
 	public class Measurement
 	{
+		// Properties.
+		
 		private static const SAVED_MEASUREMENTS_DIRECTORY_NAME:String = "measurements/";
 		private static const SAVED_MEASUREMENTS_DIRECTORY:File = File.applicationStorageDirectory.resolvePath(SAVED_MEASUREMENTS_DIRECTORY_NAME);
 		
-		public var measurementId:String;
-		public var deviceKind:String;
-		public var deviceId:String;
-		public var measurementTime:Number;
+		public var id:String;
+		public var time:Number;
 		public var latitude:Number;
 		public var longitude:Number;
+		public var speed:Number;
+		public var deviceKind:String;
+		public var deviceId:String;
 		public var sensorKind:String;
 		private var _sensorData:String;
+		private var _creationCompleteCallback:Function;
 		
 		public function get sensorData():String
 		{
@@ -49,7 +55,7 @@ package senstastic
 		
 		private function get file():File
 		{
-			return SAVED_MEASUREMENTS_DIRECTORY.resolvePath(measurementId);
+			return SAVED_MEASUREMENTS_DIRECTORY.resolvePath(id);
 		}
 		
 		private static function get unixTime():Number
@@ -58,15 +64,38 @@ package senstastic
 			return date.time / 1000;
 		}
 		
-		public function Measurement(sensorKind:String, sensorData:*)
+		// Initialization.
+		
+		public static function asyncCreate(sensorKind:String, sensorData:*, creationCompleteCallback:Function):void
 		{
-			this.sensorKind = sensorKind;
-			this.sensorData = sensorData;
+			// Create a new measurement, and initialize its values.
+			var measurement:Measurement = new Measurement();
+			measurement.id = UIDUtil.createUID();
+			measurement.time = unixTime;
+			measurement.deviceKind = Device.kind;
+			measurement.deviceId = Device.id;
+			measurement.sensorKind = sensorKind;
+			measurement.sensorData = sensorData;
+			measurement._creationCompleteCallback = creationCompleteCallback;
 			
-			measurementId = UIDUtil.createUID();
-			deviceKind = Device.deviceKind;
-			deviceId = Device.deviceId;
-			measurementTime = unixTime;
+			// Request GPS location.
+			GPS.requestLocation(measurement.onGPSCallback);
+		}
+		
+		public function onGPSCallback(event:GeolocationEvent):void
+		{
+			// If a GPS location could not be acquired, callback with null.
+			if (!event)
+			{
+				_creationCompleteCallback(null);
+				return;
+			}
+			
+			latitude = event.latitude;
+			longitude = event.longitude;
+			speed = event.speed;
+			
+			_creationCompleteCallback(this);
 		}
 		
 		public static function fetchSavedMeasurements():Array
@@ -83,15 +112,20 @@ package senstastic
 			return measurements;
 		}
 		
+		// Persistence.
+		
 		public function save():void
 		{
-			FileUtility.writeObject(file, this);
+			if (!file)
+				FileUtility.writeObject(file, this);
 		}
 		
 		public function destroy():void
 		{
 			FileUtility.destroyObject(file);
 		}
+		
+		// Sending.
 
 		public function send(url:String):void
 		{
@@ -108,7 +142,7 @@ package senstastic
 		
 		private function onSendFailure(event:FaultEvent):void
 		{
-			// Try again later.
+			save();
 		}
 	}
 }

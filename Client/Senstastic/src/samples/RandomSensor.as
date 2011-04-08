@@ -11,7 +11,7 @@ package samples
 	
 	public class RandomSensor extends EventDispatcher
 	{
-		private var _sensorKind:String = "random sensor";
+		private var _sensorKind:String = "RandomSensor";
 		private var _timer:Timer;
 		
 		public function RandomSensor()
@@ -27,8 +27,16 @@ package samples
 		
 		private function onTimerFired(event:TimerEvent):void
 		{
-			var measurement:Measurement = new Measurement(_sensorKind, Math.round(Math.random() * 100) as int);
-			dispatchEvent(new SensorEvent(measurement));
+			var randomNumber:int = Math.round(Math.random() * 100.0) as int
+			Measurement.asyncCreate(_sensorKind, randomNumber, onMeasurementCreationComplete);
+		}
+		
+		private function onMeasurementCreationComplete(measurement:Measurement):void
+		{
+			if (!measurement)
+				return;
+			
+			dispatchEvent(new SensorEvent(SensorEvent.MEASUREMENT_CREATED, measurement));
 		}
 	}
 }
