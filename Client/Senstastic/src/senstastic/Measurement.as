@@ -106,20 +106,7 @@ package senstastic
 				save();
 		}
 		
-		private static function fetchSavedMeasurements():Array
-		{
-			var savedMeasurementsDirectory:File = File.applicationStorageDirectory.resolvePath(SAVED_MEASUREMENTS_DIRECTORY_NAME);
-			var files:Array = savedMeasurementsDirectory.getDirectoryListing();
-			var measurements:Array = new Array();
-			
-			for each (var file:File in files)
-			{
-				measurements.push(FileUtility.readObject(file));
-			}
-			
-			return measurements;
-		}
-		
+
 		// Persistence.
 		
 		private function save():void
@@ -159,5 +146,32 @@ package senstastic
 		{
 			save();
 		}
+		
+		// Pushing out saved measurements.
+		
+		private static function sendSavedMeasurements():void
+		{
+			var measurements:Array = fetchSavedMeasurements();
+			
+			for each (var measurement:Measurement in measurements)
+			{
+				measurement.send();
+			}
+		}
+		
+		private static function fetchSavedMeasurements():Array
+		{
+			var savedMeasurementsDirectory:File = File.applicationStorageDirectory.resolvePath(SAVED_MEASUREMENTS_DIRECTORY_NAME);
+			var files:Array = savedMeasurementsDirectory.getDirectoryListing();
+			var measurements:Array = new Array();
+			
+			for each (var file:File in files)
+			{
+				measurements.push(FileUtility.readObject(file));
+			}
+			
+			return measurements;
+		}
+		
 	}
 }
