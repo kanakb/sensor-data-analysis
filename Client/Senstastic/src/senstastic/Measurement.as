@@ -20,6 +20,7 @@ package senstastic
 		
 		private static const SAVED_MEASUREMENTS_DIRECTORY_NAME:String = "measurements/";
 		private static const SAVED_MEASUREMENTS_DIRECTORY:File = File.applicationStorageDirectory.resolvePath(SAVED_MEASUREMENTS_DIRECTORY_NAME);
+		private static var _destinationURL:String;
 		
 		public var id:String;
 		public var time:Number;
@@ -30,7 +31,6 @@ package senstastic
 		public var deviceId:String;
 		public var sensorKind:String;
 		private var _sensorData:String;
-		private var _creationCompleteCallback:Function;
 		
 		public function get sensorData():String
 		{
@@ -64,9 +64,16 @@ package senstastic
 			return date.time / 1000;
 		}
 		
+		public static function init(destinationURL:String):void
+		{
+			_destinationURL = destinationURL;
+			
+			// TODO: Listen to network changes.
+		}
+		
 		// Initialization.
 		
-		public static function asyncCreate(sensorKind:String, sensorData:*, creationCompleteCallback:Function):void
+		public static function create(sensorKind:String, sensorData:*):void
 		{
 			// Create a new measurement, and initialize its values.
 			var measurement:Measurement = new Measurement();
@@ -76,29 +83,30 @@ package senstastic
 			measurement.deviceId = Device.id;
 			measurement.sensorKind = sensorKind;
 			measurement.sensorData = sensorData;
-			measurement._creationCompleteCallback = creationCompleteCallback;
 			
 			// Request GPS location.
 			GPS.requestLocation(measurement.onGPSCallback);
 		}
 		
-		public function onGPSCallback(event:GeolocationEvent):void
+		private function onGPSCallback(event:GeolocationEvent):void
 		{
-			// If a GPS location could not be acquired, callback with null.
+			// If a GPS location could not be acquired, forget this measurement.
 			if (!event)
-			{
-				_creationCompleteCallback(null);
 				return;
-			}
 			
+			// Finish initializing the new measurement.
 			latitude = event.latitude;
 			longitude = event.longitude;
 			speed = event.speed;
 			
-			_creationCompleteCallback(this);
+			// Send or save the measurement.
+			if (Device.isWifiAvailable)
+				send();
+			else
+				save();
 		}
 		
-		public static function fetchSavedMeasurements():Array
+		private static function fetchSavedMeasurements():Array
 		{
 			var savedMeasurementsDirectory:File = File.applicationStorageDirectory.resolvePath(SAVED_MEASUREMENTS_DIRECTORY_NAME);
 			var files:Array = savedMeasurementsDirectory.getDirectoryListing();
@@ -114,23 +122,30 @@ package senstastic
 		
 		// Persistence.
 		
-		public function save():void
+		private function save():void
 		{
 			if (!file)
 				FileUtility.writeObject(file, this);
 		}
 		
-		public function destroy():void
+		private function destroy():void
 		{
 			FileUtility.destroyObject(file);
 		}
 		
 		// Sending.
 
-		public function send(url:String):void
+		private function send():void
 		{
+			if (!_destinationURL)
+			{
+				Log("Destination URL is not set! Measurement could not be sent.");
+				save();
+				return;
+			}
+			
 			var service:HTTPService = new HTTPService();
-			service.url = url;
+			service.url = _destinationURL;
 			service.method = "POST";
 			service.send(this);
 		}

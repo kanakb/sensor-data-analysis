@@ -36,6 +36,9 @@ package senstastic
 			return Capabilities.os;
 		}
 		
-
+		public static function get isWifiAvailable():Boolean
+		{
+			return true;
+		}
 	}
 }
