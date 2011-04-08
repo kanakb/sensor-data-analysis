@@ -18,7 +18,7 @@ package senstastic
 			
 		}
 
-		public static function get deviceId():String
+		public static function get id():String
 		{
 			var deviceId:String = FileUtility.readObject(DEVICE_ID_FILE) as String;
 			
@@ -31,7 +31,7 @@ package senstastic
 			return deviceId;
 		}
 		
-		public static function get deviceKind():String
+		public static function get kind():String
 		{
 			return Capabilities.os;
 		}
