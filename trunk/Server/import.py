@@ -31,15 +31,17 @@ class Importer(webapp.RequestHandler):
         self.response.headers['Content-Type'] = 'text/plain'
         try:
             # Intialize a tree with the input XML
-            measXML = "<measurementData>\n\n"
+            measXML = '<measurementData>\n\n'
             measXML += self.request.get('measurementData')
-            measXML += "\n\n</measurementData>"
-            self.response.out.write(measXML)
-            measurements = fromstring(measXML)
-            self.response.out.write(measurements.getchildren())
+            measXML += '\n\n</measurementData>'
+            measurements = fromstring(measXML).getchildren()
             
             # Insert each measurement into the datastore
             for m in measurements:
+                # Making sure input is a set of measurement tags
+                if m.tag != 'measurement':
+                    raise ValueError
+                    
                 elementTree = ElementTree(m)
                 mEntry = Measurement()
                 mEntry.deviceId = senselib.toHash(elementTree.findtext('deviceId'))
@@ -51,12 +53,16 @@ class Importer(webapp.RequestHandler):
                 # convert unix time to datetime
                 utime = elementTree.findtext('measurementTime')
                 mEntry.time = senselib.toDateTime(utime)
-                # save to datastore
-                mEntry.put()
+                # save to datastore if fields all valid
+                if mEntry.deviceId != None and mEntry.deviceKind != None and \
+                   mEntry.latitude != None and mEntry.longitude != None and \
+                   mEntry.sensorKind != None and mEntry.sensorData != None and \
+                   mEntry.time != None:
+                    mEntry.put()
                 
             self.response.out.write("SUCCESS")
-                
-        except (KeyError, CapabilityDisabledError):
+            
+        except (KeyError, ValueError, CapabilityDisabledError):
             self.response.out.write("FAILURE")
 
 application = webapp.WSGIApplication(
