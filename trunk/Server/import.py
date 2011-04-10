@@ -20,11 +20,12 @@ from lib import senselib
 
 # Schema for individual measurement data
 class Measurement(geomodel.GeoModel):
+    id = db.StringProperty()
     deviceId = db.StringProperty()
     deviceKind = db.StringProperty()
     time = db.DateTimeProperty()
     sensorKind = db.StringProperty()
-    sensorData = db.BlobProperty()
+    data = db.BlobProperty()
     
 # Manage incoming sensor data
 class Importer(webapp.RequestHandler):
@@ -32,9 +33,7 @@ class Importer(webapp.RequestHandler):
         self.response.headers['Content-Type'] = 'text/plain'
         try:
             # Intialize a tree with the input XML
-            measXML = '<measurementData>\n\n'
-            measXML += self.request.get('measurementData')
-            measXML += '\n\n</measurementData>'
+            measXML = self.request.get('xml')
             measurements = fromstring(measXML).getchildren()
             
             # Insert each measurement into the datastore
@@ -49,15 +48,16 @@ class Importer(webapp.RequestHandler):
                 longitude = float(elementTree.findtext('longitude'))
                 mEntry = Measurement(location=db.GeoPt(latitude, longitude))
                 # some fields can be saved as-is
+                mEntry.id = elementTree.findtext('deviceId')
                 mEntry.deviceId = senselib.toHash(elementTree.findtext('deviceId'))
                 mEntry.deviceKind = elementTree.findtext('deviceKind')
                 mEntry.sensorKind = elementTree.findtext('sensorKind')
-                mEntry.sensorData = elementTree.findtext('sensorData')
+                mEntry.data = elementTree.findtext('data')
                 # convert unix time to datetime
                 utime = elementTree.findtext('measurementTime')
                 mEntry.time = senselib.toDateTime(utime)
                 # save to datastore if fields all valid
-                if mEntry.deviceId != None and mEntry.deviceKind != None and \
+                if mEntry.id != None and mEntry.deviceId != None and mEntry.deviceKind != None and \
                    latitude != None and longitude != None and \
                    mEntry.sensorKind != None and mEntry.sensorData != None and \
                    mEntry.time != None:
