@@ -9,7 +9,7 @@ class DataAdder(webapp.RequestHandler):
                 <body>
                     <form action="/import" method="post">
                         Measurement Data: <br />
-                        <textarea rows="20" cols="100" name="measurementData"></textarea>
+                        <textarea rows="40" cols="100" name="measurementData"></textarea>
                         <input type="submit" value="Submit" />
                     </form>
                 </body>
