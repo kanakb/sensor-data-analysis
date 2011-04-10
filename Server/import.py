@@ -12,15 +12,16 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext import db
 from google.appengine.runtime.apiproxy_errors import CapabilityDisabledError
 
+# Third party imports
+from third_party.geo import geomodel
+
 # Application imports
 from lib import senselib
 
 # Schema for individual measurement data
-class Measurement(db.Model):
+class Measurement(geomodel.GeoModel):
     deviceId = db.StringProperty()
     deviceKind = db.StringProperty()
-    latitude = db.FloatProperty()
-    longitude = db.FloatProperty()
     time = db.DateTimeProperty()
     sensorKind = db.StringProperty()
     sensorData = db.BlobProperty()
@@ -43,11 +44,13 @@ class Importer(webapp.RequestHandler):
                     raise ValueError
                     
                 elementTree = ElementTree(m)
-                mEntry = Measurement()
+                # store latitude/longitude as a single geo point
+                latitude = float(elementTree.findtext('latitude'))
+                longitude = float(elementTree.findtext('longitude'))
+                mEntry = Measurement(location=db.GeoPt(latitude, longitude))
+                # some fields can be saved as-is
                 mEntry.deviceId = senselib.toHash(elementTree.findtext('deviceId'))
                 mEntry.deviceKind = elementTree.findtext('deviceKind')
-                mEntry.latitude = float(elementTree.findtext('latitude'))
-                mEntry.longitude = float(elementTree.findtext('longitude'))
                 mEntry.sensorKind = elementTree.findtext('sensorKind')
                 mEntry.sensorData = elementTree.findtext('sensorData')
                 # convert unix time to datetime
@@ -55,9 +58,10 @@ class Importer(webapp.RequestHandler):
                 mEntry.time = senselib.toDateTime(utime)
                 # save to datastore if fields all valid
                 if mEntry.deviceId != None and mEntry.deviceKind != None and \
-                   mEntry.latitude != None and mEntry.longitude != None and \
+                   latitude != None and longitude != None and \
                    mEntry.sensorKind != None and mEntry.sensorData != None and \
                    mEntry.time != None:
+                    mEntry.update_location()
                     mEntry.put()
                 
             self.response.out.write("SUCCESS")
