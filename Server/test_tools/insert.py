@@ -1,3 +1,6 @@
+# insert.py
+# an easy way to pass sensor data without a client
+
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
@@ -9,7 +12,7 @@ class DataAdder(webapp.RequestHandler):
                 <body>
                     <form action="/import" method="post">
                         Measurement Data: <br />
-                        <textarea rows="40" cols="100" name="measurementData"></textarea>
+                        <textarea rows="40" cols="100" name="xml"></textarea>
                         <input type="submit" value="Submit" />
                     </form>
                 </body>

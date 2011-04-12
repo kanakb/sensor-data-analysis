@@ -5,7 +5,9 @@ api_version: 1
 
 handlers:
 - url: /import
-  script: import.py
+  script: importer.py
+- url: /getRawData
+  script: getRawData.pys
 - url: /insert
   script: test_tools/insert.py
 - url: /.*

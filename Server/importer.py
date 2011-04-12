@@ -1,4 +1,4 @@
-# import.py
+# importer.py
 # Receive and store phone sensor data
 
 # Python library imports
