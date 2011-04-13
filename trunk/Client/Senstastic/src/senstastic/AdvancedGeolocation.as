@@ -98,7 +98,7 @@ package senstastic
 		
 		private static function isMoreAccurate(event1:GeolocationEvent, event2:GeolocationEvent):Boolean
 		{	
-			return !event2 || event1.verticalAccuracy + event1.horizontalAccuracy < event2.verticalAccuracy + event2.horizontalAccuracy;
+			return !event2 || (event1 && event1.verticalAccuracy + event1.horizontalAccuracy < event2.verticalAccuracy + event2.horizontalAccuracy);
 		}
 	}
 }
