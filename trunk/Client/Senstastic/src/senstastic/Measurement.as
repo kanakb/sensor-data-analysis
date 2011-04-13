@@ -3,7 +3,9 @@ package senstastic
 	import flash.events.Event;
 	import flash.events.GeolocationEvent;
 	import flash.filesystem.File;
+	import flash.sensors.Geolocation;
 	import flash.utils.ByteArray;
+	import flash.utils.Timer;
 	import flash.xml.XMLDocument;
 	import flash.xml.XMLNode;
 	
@@ -31,6 +33,8 @@ package senstastic
 		public var deviceId:String;
 		public var sensorKind:String;
 		private var _data:String;
+		private var _advancedGeolocation:AdvancedGeolocation;
+		private var _timer:Timer;
 		
 		public function get data():String
 		{
@@ -73,28 +77,30 @@ package senstastic
 		
 		// Initialization.
 		
-		public static function create(sensorKind:String, data:*):void
+		public function Measurement(sensorKind:String, data:*)
 		{
-			// Create a new measurement, and initialize its values.
-			var measurement:Measurement = new Measurement();
-			measurement.id = UIDUtil.createUID();
-			measurement.time = unixTime;
-			measurement.deviceKind = Device.kind;
-			measurement.deviceId = Device.id;
-			measurement.sensorKind = sensorKind;
-			measurement.data = data;
+			id = UIDUtil.createUID();
+			time = unixTime;
+			deviceKind = Device.kind;
+			deviceId = Device.id;
+			sensorKind = sensorKind;
+			data = data;
 			
-			// Request GPS location.
-			GPS.requestLocation(measurement.onGPSCallback);
+			_advancedGeolocation = new AdvancedGeolocation(advancedGeolocationCallback);
 		}
 		
-		private function onGPSCallback(event:GeolocationEvent):void
+		public static function create(sensorKind:String, data:*):void
 		{
-			// If a GPS location could not be acquired, forget this measurement.
+			var measurement:Measurement = new Measurement(sensorKind, data);
+		}
+		
+		private function advancedGeolocationCallback(event:GeolocationEvent):void
+		{
+			// If the location could not be acquired.
 			if (!event)
 				return;
 			
-			// Finish initializing the new measurement.
+			// Extract the location data.
 			latitude = event.latitude;
 			longitude = event.longitude;
 			speed = event.speed;
