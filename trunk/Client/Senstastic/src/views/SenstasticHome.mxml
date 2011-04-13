@@ -19,6 +19,8 @@
 			{
 				Measurement.init("http://dudeitworks.com");
 				randomSensor = new RandomSensor();
+				
+				trace(UIDUtil.createUID());
 			}
 			
 		]]>
