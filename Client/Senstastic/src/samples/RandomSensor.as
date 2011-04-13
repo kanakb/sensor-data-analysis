@@ -6,7 +6,6 @@ package samples
 	import flash.utils.Timer;
 	
 	import senstastic.Measurement;
-	import senstastic.SensorEvent;
 	
 	public class RandomSensor extends EventDispatcher
 	{
