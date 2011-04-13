@@ -30,26 +30,26 @@ package senstastic
 		public var deviceKind:String;
 		public var deviceId:String;
 		public var sensorKind:String;
-		private var _sensorData:String;
+		private var _data:String;
 		
-		public function get sensorData():String
+		public function get data():String
 		{
-			return _sensorData;
+			return _data;
 		}
 		
-		public function set sensorData(value:*):void
+		public function set data(value:*):void
 		{
 			// Encode binary data.
 			if (value is ByteArray)
 			{
 				var encoder:Base64Encoder = new Base64Encoder();
 				encoder.encodeBytes(value);
-				_sensorData = encoder.toString();
+				_data = encoder.toString();
 			}
 			// Convert primitive to string.
 			else
 			{
-				_sensorData = value.toString();
+				_data = value.toString();
 			}
 		}
 		
@@ -73,7 +73,7 @@ package senstastic
 		
 		// Initialization.
 		
-		public static function create(sensorKind:String, sensorData:*):void
+		public static function create(sensorKind:String, data:*):void
 		{
 			// Create a new measurement, and initialize its values.
 			var measurement:Measurement = new Measurement();
@@ -82,7 +82,7 @@ package senstastic
 			measurement.deviceKind = Device.kind;
 			measurement.deviceId = Device.id;
 			measurement.sensorKind = sensorKind;
-			measurement.sensorData = sensorData;
+			measurement.data = data;
 			
 			// Request GPS location.
 			GPS.requestLocation(measurement.onGPSCallback);
@@ -111,13 +111,14 @@ package senstastic
 		
 		private function save():void
 		{
-			if (!file)
+			if (!file.exists)
 				FileUtility.writeObject(file, this);
 		}
 		
 		private function destroy():void
 		{
-			FileUtility.destroyObject(file);
+			if (file.exists)
+				FileUtility.destroyObject(file);
 		}
 		
 		// Sending.
