@@ -131,6 +131,8 @@ package senstastic
 
 		private function send():void
 		{
+			// TODO: Use XML.
+			
 			if (!_destinationURL)
 			{
 				Log("Destination URL is not set! Measurement could not be sent.");
@@ -158,6 +160,8 @@ package senstastic
 		
 		private static function sendSavedMeasurements():void
 		{
+			// TODO: Use XML.
+			
 			var measurements:Array = fetchSavedMeasurements();
 			
 			for each (var measurement:Measurement in measurements)

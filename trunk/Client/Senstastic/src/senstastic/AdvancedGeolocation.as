@@ -17,7 +17,7 @@ package senstastic
 		private var _timer:Timer;
 		private var _bestGeolocationEvent:GeolocationEvent;
 		
-		public function AdvancedGeolocation(callback:Function, desiredAccuracy:Number=100, minimumAcceptableAccuracy:Number=200, timeout:Number=60)
+		public function AdvancedGeolocation(callback:Function, desiredAccuracy:Number=100, minimumAcceptableAccuracy:Number=200, timeout:Number=10)
 		{
 			super();
 			
@@ -36,6 +36,7 @@ package senstastic
 			
 			_timer = new Timer(timeout * 1000, 1);
 			_timer.addEventListener(TimerEvent.TIMER_COMPLETE, onTimeout);
+			_timer.start();
 			
 			addEventListener(GeolocationEvent.UPDATE, onGeolocationUpdate);
 		}
@@ -49,7 +50,7 @@ package senstastic
 				callbackSuccess("Geolocation met desired accuracy.");
 		}
 		
-		private function onTimeout(event:Event):void
+		private function onTimeout(event:TimerEvent):void
 		{
 			if (meetsAccuracy(_bestGeolocationEvent, _minimumAcceptableAccuracy))
 				callbackSuccess("Geolocation met minimum acceptable accuracy.");
