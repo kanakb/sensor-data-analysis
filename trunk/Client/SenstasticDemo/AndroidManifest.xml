@@ -19,6 +19,11 @@
 
 		<receiver android:name="com.senstastic.AlarmReceiver"></receiver>
 		<service android:name="com.senstastic.SensorService"></service>
+		<service android:name="com.senstastic.app.RandomSensor" android:exported="true">
+			<intent-filter>
+				<action android:name="com.senstasticDemo.RandomSensor"/>
+			</intent-filter>
+		</service>
 
     </application>
 </manifest>
