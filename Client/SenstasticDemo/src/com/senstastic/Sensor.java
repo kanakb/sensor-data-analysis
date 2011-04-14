@@ -2,15 +2,16 @@ package com.senstastic;
 
 import android.content.Intent;
 
-public class SensorService extends WakefulIntentService 
+public class Sensor extends WakefulIntentService 
 {
-	public SensorService() 
+	public Sensor() 
 	{
 		super("SensorService");
 	}
 
 	protected void doWakefulWork(Intent intent)
 	{
-
+		int i = 0;
+		i++;
 	}
 }
