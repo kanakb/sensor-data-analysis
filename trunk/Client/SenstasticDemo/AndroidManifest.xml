@@ -18,7 +18,7 @@
         </activity>
 
 		<receiver android:name="com.senstastic.AlarmReceiver"></receiver>
-		<service android:name="com.senstastic.Sensor"></service>
+		<service android:name="com.senstastic.SensorService"></service>
 
     </application>
 </manifest>
