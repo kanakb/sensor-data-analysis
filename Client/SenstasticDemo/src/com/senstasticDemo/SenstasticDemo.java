@@ -3,6 +3,7 @@ package com.senstasticDemo;
 import java.util.Calendar;
 
 import com.senstastic.AlarmReceiver;
+import com.senstastic.app.RandomSensor;
 
 import android.app.Activity;
 import android.app.AlarmManager;
