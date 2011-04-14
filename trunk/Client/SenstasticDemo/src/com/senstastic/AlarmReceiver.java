@@ -8,6 +8,6 @@ public class AlarmReceiver extends BroadcastReceiver
 {
 	public void onReceive(Context context, Intent intent) 
 	{
-		WakefulIntentService.sendWakefulWork(context, SensorService.class);
+		WakefulIntentService.sendWakefulWork(context, Sensor.class);
 	}
 }
