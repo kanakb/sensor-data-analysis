@@ -11,17 +11,15 @@ public class AlarmReceiver extends BroadcastReceiver
 	{
 		try
 		{
-			// Get the SensorService subclass.
 			Bundle extras = intent.getExtras();
-			String sensorServiceSubclassName = extras.getString("sensorServiceSubclassName");
-			Class<?> sensorServiceSubclass = Class.forName(sensorServiceSubclassName);
+			String sensorClassName = extras.getString("sensorClassName");
+			Class<?> sensorClass = Class.forName(sensorClassName);
 			
-			// Run the SensorService subclass once.
-			WakefulIntentService.sendWakefulWork(context, sensorServiceSubclass);
+			WakefulIntentService.sendWakefulWork(context, SensorService.class);
 		}
 		catch(ClassNotFoundException e)
 		{
-			System.err.println("Sensor service class not found!");
+			System.err.println("Class not found!");
 		}
 	}
 }
