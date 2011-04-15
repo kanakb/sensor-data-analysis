@@ -1,7 +1,8 @@
-package com.senstasticDemo;
+package com.senstastic;
 
 
-import com.senstastic.WakefulIntentService;
+
+import com.senstasticDemo.SensorService;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
