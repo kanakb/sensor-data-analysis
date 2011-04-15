@@ -2,8 +2,6 @@ package com.senstastic;
 
 import java.util.Calendar;
 
-import com.senstasticDemo.SensorService;
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -15,7 +13,7 @@ public class Senstastic
 	{
         // Create the Intent.
         Intent intent = new Intent(context, AlarmReceiver.class);
-        intent.putExtra("sensorServiceClassName", SensorService.class.getName());
+        intent.putExtra("sensorServiceClassName", sensorServiceClass.getName());
         
         // Create the PendingIntent.
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
