@@ -1,4 +1,4 @@
-package com.senstastic;
+package com.senstasticDemo;
 
 import android.content.Intent;
 
