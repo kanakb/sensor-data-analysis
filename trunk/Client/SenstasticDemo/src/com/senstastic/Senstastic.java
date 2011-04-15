@@ -9,8 +9,21 @@ import android.content.Intent;
 
 public class Senstastic 
 {
-	public static void schedule(Context context, Class<?> sensorServiceClass, int interval)
+	public static void schedule(Context context, Class<? extends SensorService> sensorServiceClass)
 	{
+		// Get the interval.
+		int interval = 0;
+		try 
+		{
+			SensorService sensorServiceInstance = sensorServiceClass.newInstance();
+			interval = sensorServiceInstance.getInterval();
+		}
+		catch (Exception e)
+		{
+			System.err.println("Error getting interval!");
+		}
+		
+		
         // Create the Intent.
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra("sensorServiceClassName", sensorServiceClass.getName());
@@ -21,6 +34,5 @@ public class Senstastic
         // Create the alarm.
         AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis(), interval*1000, pendingIntent);
-
 	}
 }
