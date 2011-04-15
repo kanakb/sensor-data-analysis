@@ -7,7 +7,7 @@ import com.senstastic.WakefulIntentService;
 import android.content.Intent;
 
 public class SensorService extends WakefulIntentService 
-{
+{	
 	public SensorService() 
 	{
 		super("SensorService");
@@ -15,7 +15,17 @@ public class SensorService extends WakefulIntentService
 
 	protected void doWakefulWork(Intent intent)
 	{
+		sense();
+	}
+	
+	protected void sense()
+	{
 		int i = 0;
 		i++;
+	}
+	
+	public int interval()
+	{
+		return 20;
 	}
 }

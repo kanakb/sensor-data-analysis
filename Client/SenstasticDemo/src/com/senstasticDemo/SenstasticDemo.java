@@ -12,6 +12,6 @@ public class SenstasticDemo extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        Senstastic.schedule(this, SensorService.class, 20);
+        Senstastic.schedule(this, MySensorService.class, 20);
     }
 }
