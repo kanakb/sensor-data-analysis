@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
 
-		<receiver android:name="com.senstasticDemo.AlarmReceiver"></receiver>
+		<receiver android:name="com.senstastic.AlarmReceiver"></receiver>
 		<service android:name="com.senstasticDemo.SensorService"></service>
 		
 	</application>
