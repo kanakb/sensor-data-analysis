@@ -2,8 +2,6 @@ package com.senstastic;
 
 
 
-import com.senstasticDemo.SensorService;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
