@@ -4,9 +4,9 @@ import com.senstastic.SensorService;
 
 public class MySensorService extends SensorService
 {
-	public int interval()
+	public int getInterval()
 	{
-		return 10;
+		return 5;
 	}
 	
 	protected void sense()
