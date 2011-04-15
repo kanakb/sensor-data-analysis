@@ -23,6 +23,7 @@ public class SenstasticDemo extends Activity
         
         // Create the Intent.
         Intent intent = new Intent(this, AlarmReceiver.class);
+        intent.putExtra("sensorServiceClassName", SensorService.class.getName());
         
         // Create the PendingIntent.
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
