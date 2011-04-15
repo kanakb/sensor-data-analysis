@@ -23,6 +23,7 @@ class Measurement(geomodel.GeoModel):
     id = db.StringProperty()
     deviceId = db.StringProperty()
     deviceKind = db.StringProperty()
+    speed = db.FloatProperty()
     time = db.DateTimeProperty()
     sensorKind = db.StringProperty()
     data = db.BlobProperty()
@@ -51,6 +52,7 @@ class Importer(webapp.RequestHandler):
                 mEntry.id = elementTree.findtext('deviceId')
                 mEntry.deviceId = senselib.toHash(elementTree.findtext('deviceId'))
                 mEntry.deviceKind = elementTree.findtext('deviceKind')
+                mEntry.speed = float(elementTree.findtext('speed'))
                 mEntry.sensorKind = elementTree.findtext('sensorKind')
                 mEntry.data = elementTree.findtext('data')
                 # convert unix time to datetime
@@ -58,7 +60,7 @@ class Importer(webapp.RequestHandler):
                 mEntry.time = senselib.toDateTime(utime)
                 # save to datastore if fields all valid
                 if mEntry.id != None and mEntry.deviceId != None and mEntry.deviceKind != None and \
-                   latitude != None and longitude != None and \
+                   latitude != None and longitude != None and mEntry.speed != None and \
                    mEntry.sensorKind != None and mEntry.sensorData != None and \
                    mEntry.time != None:
                     mEntry.update_location()

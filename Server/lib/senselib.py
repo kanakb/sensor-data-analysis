@@ -17,3 +17,13 @@ def toDateTime(t):
 # Convert datetime to unix time
 def toUnixTime(t):
     return time.mktime(t.timetuple()) + (1e-6) * t.microsecond
+
+# enum creator, as suggested on StackOverflow
+# Question at: http://stackoverflow.com/q/36932
+# by sectrean (http://stackoverflow.com/users/3880/sectrean)
+# Answered by Alec Thomas (http://stackoverflow.com/users/7980/alec-thomas)
+
+def enum(*sequential, **named):
+    enums = dict(zip(sequential, range(len(sequential))), **named)
+    return type('Enum', (), enums)
+    
