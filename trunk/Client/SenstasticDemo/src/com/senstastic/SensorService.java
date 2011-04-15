@@ -1,8 +1,7 @@
-package com.senstasticDemo;
+package com.senstastic;
 
 
 
-import com.senstastic.WakefulIntentService;
 
 import android.content.Intent;
 

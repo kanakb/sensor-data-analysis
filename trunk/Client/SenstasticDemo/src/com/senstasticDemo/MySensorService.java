@@ -1,5 +1,7 @@
 package com.senstasticDemo;
 
+import com.senstastic.SensorService;
+
 public class MySensorService extends SensorService
 {
 	public int interval()
