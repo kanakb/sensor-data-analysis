@@ -14,7 +14,7 @@
 	limitations under the License.
 */
 
-package com.senstasticDemo;
+package com.senstastic;
 
 import android.app.IntentService;
 import android.content.Context;
