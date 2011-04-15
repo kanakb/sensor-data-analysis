@@ -3,7 +3,6 @@ package com.senstasticDemo;
 import java.util.Calendar;
 
 import com.senstastic.AlarmReceiver;
-import com.senstastic.app.RandomSensor;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -23,7 +22,6 @@ public class SenstasticDemo extends Activity
         
         // Create the Intent.
         Intent intent = new Intent(this, AlarmReceiver.class);
-        intent.putExtra("sensorClassName", RandomSensor.class.getName());
         
         // Create the PendingIntent.
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
