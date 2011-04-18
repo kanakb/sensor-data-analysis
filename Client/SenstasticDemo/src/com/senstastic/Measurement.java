@@ -9,48 +9,40 @@ public class Measurement
 {	
 	private Context context;
 	
-	private int id;
+	private String sensorKind;
 	private long time;
 	private float latitude;
 	private float longitude;
 	private float speed;
 	private String deviceId;
 	private String deviceKind;
-	private String sensorKind;
 	private Object data;
 	
 	public Measurement(Context context, String sensorKind, Object data)
-	{
+	{	
 		this.context = context;
 		
-		id = 0;
-		
-		Date date = new Date();
-		time = date.getTime();
-		
+		this.sensorKind = sensorKind;
+		time = (new Date()).getTime();
+		this.data = data;
 		latitude = 0;
 		longitude = 0;
 		speed = 0;
-		
 		deviceId = "";
 		deviceKind = "";
-		
-		this.sensorKind = sensorKind;
-		this.data = data;
 	}
 	
 	private String getXmlString()
 	{
 		XMLStringGenerator gen = new XMLStringGenerator();
 		gen.begin("measurement");
-		gen.addTag("id", id);
+		gen.addTag("sensorKind", sensorKind);
 		gen.addTag("time", time);
 		gen.addTag("latitude", latitude);
 		gen.addTag("longitude", longitude);
 		gen.addTag("speed", speed);
 		gen.addTag("deviceId", deviceId);
 		gen.addTag("deviceKind", deviceKind);
-		gen.addTag("sensorKind", sensorKind);
 		gen.addTag("data", data);
 		return gen.end();
 	}
@@ -59,7 +51,7 @@ public class Measurement
 	{
 		try
 		{
-			String filePath = "measurement" + Integer.toString(id) + ".xml";
+			String filePath = sensorKind + time + ".xml";
 
 			FileOutputStream fileOutputStream = context.openFileOutput(filePath, Context.MODE_PRIVATE);
 			fileOutputStream.write(getXmlString().getBytes());
