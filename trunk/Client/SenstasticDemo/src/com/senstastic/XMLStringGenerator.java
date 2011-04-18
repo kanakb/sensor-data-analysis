@@ -72,6 +72,6 @@ public class XMLStringGenerator
 	
 	private void error()
 	{
-		System.err.println("Error generating xml string!");
+		Logger.e("Error generating xml string!");
 	}
 }

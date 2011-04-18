@@ -21,7 +21,7 @@ public class AlarmReceiver extends BroadcastReceiver
         }
         catch(ClassNotFoundException e)
         {
-            System.err.println("Class not found!");
+            Logger.e("Class not found!");
         }
 	}
 }

@@ -2,6 +2,7 @@ package com.senstastic;
 
 import java.io.FileOutputStream;
 import java.util.Date;
+import java.util.UUID;
 
 import android.content.Context;
 
@@ -28,8 +29,10 @@ public class Measurement
 		latitude = 0;
 		longitude = 0;
 		speed = 0;
-		deviceId = "";
+		deviceId = UUID.randomUUID().toString();
 		deviceKind = "";
+		
+		Logger.d(getXmlString());
 	}
 	
 	private String getXmlString()
@@ -59,7 +62,7 @@ public class Measurement
 		}
 		catch(Exception e)
 		{
-			System.err.println("Could not save measurement!");
+			Logger.e("Could not save measurement!");
 			return;
 		}
 	}
