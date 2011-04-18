@@ -1,6 +1,5 @@
 package com.senstastic;
 
-import java.io.FileOutputStream;
 import java.util.Date;
 import java.util.UUID;
 
@@ -31,8 +30,6 @@ public class Measurement
 		speed = 0;
 		deviceId = UUID.randomUUID().toString();
 		deviceKind = "";
-		
-		Logger.d(getXmlString());
 	}
 	
 	private String getXmlString()
@@ -52,19 +49,10 @@ public class Measurement
 	
 	private void save()
 	{
-		try
-		{
-			String filePath = sensorKind + time + ".xml";
-
-			FileOutputStream fileOutputStream = context.openFileOutput(filePath, Context.MODE_PRIVATE);
-			fileOutputStream.write(getXmlString().getBytes());
-			fileOutputStream.close();
-		}
-		catch(Exception e)
-		{
-			Logger.e("Could not save measurement!");
-			return;
-		}
+		String fileName = "measurement_" + sensorKind + "_" + time + ".xml";
+		FileUtility.writeFile(context, fileName, getXmlString());
+		
+		Logger.d(FileUtility.readFile(context, fileName));
 	}
 	
 	public static void generate(Context context, String sensorKind, Object data)
