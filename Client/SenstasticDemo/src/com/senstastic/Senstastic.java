@@ -20,7 +20,7 @@ public class Senstastic
 		}
 		catch (Exception e)
 		{
-			System.err.println("Error getting interval!");
+			Logger.e("Error getting interval!");
 			return;
 		}
 		
