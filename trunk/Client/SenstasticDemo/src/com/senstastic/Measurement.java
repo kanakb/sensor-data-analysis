@@ -1,7 +1,6 @@
 package com.senstastic;
 
 import java.util.Date;
-import java.util.UUID;
 
 import android.content.Context;
 
@@ -28,7 +27,7 @@ public class Measurement
 		latitude = 0;
 		longitude = 0;
 		speed = 0;
-		deviceId = UUID.randomUUID().toString();
+		deviceId = Device.getDeviceId(context);
 		deviceKind = "";
 	}
 	
@@ -49,10 +48,14 @@ public class Measurement
 	
 	private void save()
 	{
-		String fileName = "measurement_" + sensorKind + "_" + time + ".xml";
-		FileUtility.writeFile(context, fileName, getXmlString());
+		String fileName = sensorKind + "_" + time + ".xml";
 		
-		Logger.d(FileUtility.readFile(context, fileName));
+		synchronized (FileUtility.class) 
+		{
+			FileUtility.writeFile(context, "measurements", fileName, getXmlString());	
+		}
+		
+		Logger.d(FileUtility.readFile(context, "measurements", fileName));
 	}
 	
 	public static void generate(Context context, String sensorKind, Object data)
