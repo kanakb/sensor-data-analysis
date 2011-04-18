@@ -34,68 +34,19 @@ public class XMLStringGenerator
 		}
 	}
 	
-	public void addTag(String tagName, byte[] value)
+	public void addTag(String tagName, Object value)
 	{
 		try
 		{
 			xmlSerializer.startTag(null, tagName);
-			xmlSerializer.text(Base64.encodeToString(value, Base64.DEFAULT));
-			xmlSerializer.endTag(null, tagName);
-		}
-		catch(Exception e)
-		{
-			error();
-		}
-	}
-	
-	public void addTag(String tagName, String value)
-	{
-		try
-		{
-			xmlSerializer.startTag(null, tagName);
-			xmlSerializer.text(value);
-			xmlSerializer.endTag(null, tagName);
-		}
-		catch(Exception e)
-		{
-			error();
-		}
-	}
-	
-	public void addTag(String tagName, int value)
-	{
-		try
-		{
-			xmlSerializer.startTag(null, tagName);
-			xmlSerializer.text(Integer.toString(value));
-			xmlSerializer.endTag(null, tagName);
-		}
-		catch(Exception e)
-		{
-			error();
-		}
-	}
-	
-	public void addTag(String tagName, long value)
-	{
-		try
-		{
-			xmlSerializer.startTag(null, tagName);
-			xmlSerializer.text(Long.toString(value));
-			xmlSerializer.endTag(null, tagName);
-		}
-		catch(Exception e)
-		{
-			error();
-		}
-	}
-	
-	public void addTag(String tagName, float value)
-	{
-		try
-		{
-			xmlSerializer.startTag(null, tagName);
-			xmlSerializer.text(Float.toString(value));
+			
+			String text;
+			if (value instanceof byte[])
+				text = Base64.encodeToString((byte[])value, Base64.DEFAULT);
+			else
+				text = value.toString();
+			
+			xmlSerializer.text(text);
 			xmlSerializer.endTag(null, tagName);
 		}
 		catch(Exception e)
