@@ -7,8 +7,6 @@ import android.content.Context;
 
 public class Measurement 
 {	
-	private static String SAVED_MEASUREMENTS_DIRECTORY = "measurements/";
-	
 	private Context context;
 	
 	private int id;
@@ -19,7 +17,7 @@ public class Measurement
 	private String deviceId;
 	private String deviceKind;
 	private String sensorKind;
-	private String data;
+	private Object data;
 	
 	public Measurement(Context context, String sensorKind, Object data)
 	{
@@ -38,7 +36,7 @@ public class Measurement
 		deviceKind = "";
 		
 		this.sensorKind = sensorKind;
-		this.data = "";
+		this.data = data;
 	}
 	
 	private String getXmlString()
@@ -61,10 +59,9 @@ public class Measurement
 	{
 		try
 		{
-			String filePath = Integer.toString(id) + ".xml";
+			String filePath = "measurement" + Integer.toString(id) + ".xml";
 
 			FileOutputStream fileOutputStream = context.openFileOutput(filePath, Context.MODE_PRIVATE);
-			String s = getXmlString();
 			fileOutputStream.write(getXmlString().getBytes());
 			fileOutputStream.close();
 		}
