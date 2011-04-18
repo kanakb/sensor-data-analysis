@@ -8,13 +8,15 @@ public class SensorService extends WakefulIntentService
 	{
 		super("SensorService");
 	}
-
+	
 	protected void doWakefulWork(Intent intent)
 	{
 		sense();
 	}
 	
-	public int getInterval()
+	// Override the following methods.
+	
+	protected int getInterval()
 	{
 		return 20;
 	}
