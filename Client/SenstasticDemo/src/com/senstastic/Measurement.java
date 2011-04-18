@@ -6,6 +6,8 @@ import android.content.Context;
 
 public class Measurement 
 {	
+	private static String MEASUREMENTS_DIRECTORY_NAME = "measurements";
+	
 	private Context context;
 	
 	private String sensorKind;
@@ -52,10 +54,9 @@ public class Measurement
 		
 		synchronized (FileUtility.class) 
 		{
-			FileUtility.writeFile(context, "measurements", fileName, getXmlString());	
+			FileUtility.writeFile(context, MEASUREMENTS_DIRECTORY_NAME, fileName, getXmlString());	
+			Logger.d(FileUtility.readFile(context, MEASUREMENTS_DIRECTORY_NAME, fileName));
 		}
-		
-		Logger.d(FileUtility.readFile(context, "measurements", fileName));
 	}
 	
 	public static void generate(Context context, String sensorKind, Object data)
