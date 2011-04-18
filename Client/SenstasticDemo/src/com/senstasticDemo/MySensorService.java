@@ -1,17 +1,17 @@
 package com.senstasticDemo;
 
+import com.senstastic.Measurement;
 import com.senstastic.SensorService;
 
 public class MySensorService extends SensorService
 {
-	public int getInterval()
+	protected int getInterval()
 	{
-		return 5;
+		return 300;
 	}
 	
 	protected void sense()
 	{
-		int j = 0;
-		j++;
+		Measurement.generate(getApplicationContext(), "MySensor", new Integer(123));
 	}
 }

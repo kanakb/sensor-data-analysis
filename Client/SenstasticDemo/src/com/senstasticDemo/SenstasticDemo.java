@@ -10,6 +10,7 @@ public class SenstasticDemo extends Activity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        
         setContentView(R.layout.main);
 
         Senstastic.schedule(this, MySensorService.class);

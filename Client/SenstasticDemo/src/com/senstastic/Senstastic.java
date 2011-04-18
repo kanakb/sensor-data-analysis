@@ -21,8 +21,8 @@ public class Senstastic
 		catch (Exception e)
 		{
 			System.err.println("Error getting interval!");
+			return;
 		}
-		
 		
         // Create the Intent.
         Intent intent = new Intent(context, AlarmReceiver.class);
