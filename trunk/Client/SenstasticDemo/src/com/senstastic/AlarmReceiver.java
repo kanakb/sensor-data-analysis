@@ -16,8 +16,8 @@ public class AlarmReceiver extends BroadcastReceiver
         	Bundle extras = intent.getExtras();
         	String sensorServiceClassName = extras.getString("sensorServiceClassName");
         	Class<?> sensorServiceClass = Class.forName(sensorServiceClassName);
-	            
-        	WakefulIntentService.sendWakefulWork(context, sensorServiceClass);
+	          
+        	context.startService(new Intent(context, sensorServiceClass));
         }
         catch(ClassNotFoundException e)
         {

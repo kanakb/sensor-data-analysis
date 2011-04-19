@@ -7,11 +7,13 @@ public class MySensorService extends SensorService
 {
 	protected int getInterval()
 	{
-		return 300;
+		return 10;
 	}
 	
 	protected void sense()
 	{
-		Measurement.generate(getApplicationContext(), "MySensor", new Integer(123));
+		Measurement.generate(this, "MySensor", new Integer(123));
+		
+		finish();
 	}
 }
