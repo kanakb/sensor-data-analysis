@@ -17,16 +17,7 @@ from third_party.geo import geomodel
 
 # Application imports
 from lib import senselib
-
-# Schema for individual measurement data
-class Measurement(geomodel.GeoModel):
-    id = db.StringProperty()
-    deviceId = db.StringProperty()
-    deviceKind = db.StringProperty()
-    speed = db.FloatProperty()
-    time = db.DateTimeProperty()
-    sensorKind = db.StringProperty()
-    data = db.BlobProperty()
+from lib.schemas import Measurement
     
 # Manage incoming sensor data
 class Importer(webapp.RequestHandler):
@@ -49,7 +40,6 @@ class Importer(webapp.RequestHandler):
                 longitude = float(elementTree.findtext('longitude'))
                 mEntry = Measurement(location=db.GeoPt(latitude, longitude))
                 # some fields can be saved as-is
-                mEntry.id = elementTree.findtext('deviceId')
                 mEntry.deviceId = senselib.toHash(elementTree.findtext('deviceId'))
                 mEntry.deviceKind = elementTree.findtext('deviceKind')
                 mEntry.speed = float(elementTree.findtext('speed'))
@@ -59,7 +49,7 @@ class Importer(webapp.RequestHandler):
                 utime = elementTree.findtext('measurementTime')
                 mEntry.time = senselib.toDateTime(utime)
                 # save to datastore if fields all valid
-                if mEntry.id != None and mEntry.deviceId != None and mEntry.deviceKind != None and \
+                if mEntry.deviceId != None and mEntry.deviceKind != None and \
                    latitude != None and longitude != None and mEntry.speed != None and \
                    mEntry.sensorKind != None and mEntry.sensorData != None and \
                    mEntry.time != None:

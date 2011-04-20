@@ -17,21 +17,7 @@ from third_party.geo import geomodel
 
 # Application imports
 from lib import senselib
-from importer import Measurement
-
-# Enumerate search criteria
-class SearchParams:
-    idSet = Set()
-    startTime = None
-    endTime = None
-    minLatitude = None
-    maxLatitude = None
-    minLongitude = None
-    maxLongitude = None
-    minSpeed = None
-    maxSpeed = None
-    deviceKindSet = Set()
-    deviceIdSet = Set()
+from lib.schemas import Measurement
 
 # Base functionality for getting data
 class GenericDataRetriever(webapp.RequestHandler):
@@ -50,26 +36,61 @@ class GenericDataRetriever(webapp.RequestHandler):
                     raise ValueError
                     
                 elementTree = ElementTree(m)
-                innerResp = treeToXML(elementTree)
+                rangeDict = self.treeToDict(elementTree)
+                innerResp = self.dictToXML(rangeDict)
                 
-                resp += innerResp
+                resp += str(innerResp) + '\n'
+            
+            self.response.out.write(resp)
             
         except (CapabilityDisabledError, KeyError, ValueError):
             self.response.out.write("FAILURE")
+            
+    # Run queries based on the dict to get some XML
+    def dictToXML(self, elemDict):
+            # start with everything (query isn't run until told to)
+            q = Measurement.all()
+            
+            # add device kinds
+            try:
+                if elemDict['deviceKindList']:
+                    q = q.filter("deviceKind IN", elemDict['deviceKindList'])
+            except KeyError:
+                pass
+            
+            # add device IDs
+            try:
+                if elemDict['deviceIdList']:
+                    q = q.filter("deviceId IN", elemDict['deviceIdList'])
+            except KeyError:
+                pass
+                
+            # add time range if possible (filter on this first since lots of speeds will be the same)
+            timeAdded = True
+            try:
+                if elemDict['minTime']:
+                    q = q.filter("time >", elemDict['minTime']).filter("time <", elemDict['maxTime'])
+                else:
+                    timeAdded = False
+            except KeyError:
+                timeAdded = False
+                
+            # add speed range if time range not specified
+            speedAdded = True
+            try:
+                if not timeAdded and elemDict['minSpeed']:
+                    q = q.filter("speed >", elemDict['minSpeed']).filter("speed <", elemDict['maxSpeed'])
+                else:
+                    speedAdded = False
+            except KeyError:
+                speedAdded = False
+                
     
-    # Given a tree, return some XML that represents the data
-    def treeToXML(self, elemTree):
+    # Given a tree, return a dict that summarizes the data
+    def treeToDict(self, elemTree):
         try:
             # fill search params if they exist
-            sp = SearchParams()
-            
-            # get all of the IDs to lookup
-            ids = elemTree.find('ids')
-            if ids:
-                idList = ids.findall('id')
-                for id in idList:
-                    if validateElement(id):
-                        sp.idSet.add(id.text)
+            sp = {}
                         
             # get the minimum/maximum latitude/longtiude
             minLatitude = elemTree.find('minLatitude')
@@ -77,45 +98,57 @@ class GenericDataRetriever(webapp.RequestHandler):
             minLongitude = elemTree.find('minLongitude')
             maxLongitude = elemTree.find('maxLongitude')
             # all must exist
-            if validateElement(minLatitude) and validateElement(maxLatitude) and \
-            validateElement(minLongitude) and validateElement(maxLongitude):
-                sp.minLatitude = float(minLatitude.text)
-                sp.maxLatitude = float(maxLatitude.text)
-                sp.minLongitude = float(minLongitude.text)
-                sp.maxLongitude = float(maxLongitude.text)
+            if self.validateElement(minLatitude) and self.validateElement(maxLatitude) and \
+            self.validateElement(minLongitude) and self.validateElement(maxLongitude):
+                sp['minLatitude'] = float(minLatitude.text)
+                sp['maxLatitude'] = float(maxLatitude.text)
+                sp['minLongitude'] = float(minLongitude.text)
+                sp['maxLongitude'] = float(maxLongitude.text)
+                        
+            # get the minimum/maximum time
+            minTime = elemTree.find('minTime')
+            maxTime = elemTree.find('maxTime')
+            # all must exist
+            if self.validateElement(minTime) and self.validateElement(maxTime):
+                sp['minTime'] = senselib.toDateTime(float(minTime.text))
+                sp['maxTime'] = senselib.toDateTime(float(maxTime.text))
                         
             # get the minimum/maximum speed
             minSpeed = elemTree.find('minSpeed')
             maxSpeed = elemTree.find('maxSpeed')
             # all must exist
-            if validateElement(minSpeed) and validateElement(maxSpeed):
-                sp.minSpeed = float(minSpeed.text)
-                sp.maxSpeed = float(maxSpeed.text)
+            if self.validateElement(minSpeed) and self.validateElement(maxSpeed):
+                sp['minSpeed'] = float(minSpeed.text)
+                sp['maxSpeed'] = float(maxSpeed.text)
             
             # get all of the deviceKinds to lookup
             deviceKinds = elemTree.find('deviceKinds')
             if deviceKinds:
                 deviceKindList = deviceKinds.findall('deviceKind')
+                sp['deviceKindList'] = Set()
                 for deviceKind in deviceKindList:
-                    if validateElement(deviceKind):
-                        sp.deviceKindSet.add(deviceKind.text)
+                    if self.validateElement(deviceKind):
+                        sp['deviceKindList'].append(deviceKind.text)
             
             # get all of the deviceIds to lookup
             deviceIds = elemTree.find('deviceIds')
             if deviceIds:
                 deviceIdList = deviceIds.findall('deviceId')
+                sp['deviceIdList'] = Set()
                 for deviceId in deviceIdList:
-                    if validateElement(deviceId):
-                        sp.deviceIdSet.add(deviceId.text)
-                
+                    if self.validateElement(deviceId):
+                        sp['deviceIdList'].append(deviceId.text)
+            
+            # the dictionary is set up, so return it
+            return sp
+            
         except:
             raise ValueError
-        return ""
         
     def validateElement(self, elt):
-        if elt and elt.text and elt.text != '':
+        if elt != None and elt.text and elt.text != '':
             return True
-        else
+        else:
             return False
 
 application = webapp.WSGIApplication(

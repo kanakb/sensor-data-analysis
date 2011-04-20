@@ -10,5 +10,7 @@ handlers:
   script: getRawData.pys
 - url: /insert
   script: test_tools/insert.py
+- url: /extract
+  script: test_tools/extract.py
 - url: /.*
   script: error.py
