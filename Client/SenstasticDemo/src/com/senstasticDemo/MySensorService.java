@@ -14,6 +14,6 @@ public class MySensorService extends SensorService
 	{
 		Measurement.generate(this, "MySensor", new Integer(123));
 		
-		finish();
+		finishSensing();
 	}
 }
