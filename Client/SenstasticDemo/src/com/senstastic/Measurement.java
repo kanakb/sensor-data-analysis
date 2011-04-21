@@ -1,7 +1,5 @@
 package com.senstastic;
 
-import java.util.Date;
-
 import android.content.Context;
 
 public class Measurement 
@@ -10,40 +8,40 @@ public class Measurement
 	
 	private Context context;
 	
+	private String deviceId;
+	private String deviceKind;
 	private String sensorKind;
 	private long time;
 	private float latitude;
 	private float longitude;
-	private float speed;
-	private String deviceId;
-	private String deviceKind;
 	private Object data;
 	
-	public Measurement(Context context, String sensorKind, Object data)
+	public Measurement(Context context, String sensorKind, long time, float latitude, float longitude, Object data)
 	{	
 		this.context = context;
 		
+		this.deviceId = Device.getDeviceId(context);
+		this.deviceKind = "";
 		this.sensorKind = sensorKind;
-		time = (new Date()).getTime();
+		this.time = time;
+		this.latitude = latitude;
+		this.longitude = longitude;
 		this.data = data;
-		latitude = 0;
-		longitude = 0;
-		speed = 0;
-		deviceId = Device.getDeviceId(context);
-		deviceKind = "";
+		
+		// TODO: Change.
+		save();
 	}
 	
 	private String getXmlString()
 	{
 		XMLStringGenerator gen = new XMLStringGenerator();
 		gen.begin("measurement");
+		gen.addTag("deviceId", deviceId);
+		gen.addTag("deviceKind", deviceKind);
 		gen.addTag("sensorKind", sensorKind);
 		gen.addTag("time", time);
 		gen.addTag("latitude", latitude);
 		gen.addTag("longitude", longitude);
-		gen.addTag("speed", speed);
-		gen.addTag("deviceId", deviceId);
-		gen.addTag("deviceKind", deviceKind);
 		gen.addTag("data", data);
 		return gen.end();
 	}
@@ -57,12 +55,5 @@ public class Measurement
 			FileUtility.writeFile(context, MEASUREMENTS_DIRECTORY_NAME, fileName, getXmlString());	
 			Logger.d(FileUtility.readFile(context, MEASUREMENTS_DIRECTORY_NAME, fileName));
 		}
-	}
-	
-	public static void generate(Context context, String sensorKind, Object data)
-	{
-		Measurement measurement = new Measurement(context, sensorKind, data);
-		
-		measurement.save();
 	}
 }

@@ -2,13 +2,10 @@ package com.senstastic;
 
 import android.app.Service;
 import android.content.Intent;
-import android.location.LocationManager;
 import android.os.IBinder;
 
 public class SensorService extends Service
-{		
-	LocationManager locationManager;
-	
+{
 	public SensorService() 
 	{
 		super();
