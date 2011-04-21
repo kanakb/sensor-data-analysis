@@ -124,7 +124,6 @@ public class SensorService extends Service implements LocationReceiver
 	
 	protected void sense()
 	{
-		int i = 0;
-		i++;
+
 	}
 }
