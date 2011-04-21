@@ -23,4 +23,10 @@ public class Device
 			return deviceId;
 		}
 	}
+	
+	public static String getDeviceKind()
+	{
+		// TODO: Implement;
+		return "DeviceKind";
+	}
 }
