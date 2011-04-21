@@ -1,0 +1,32 @@
+<measurements>
+    <measurement>
+        <latitude>37</latitude>
+        <longitude>-100</longitude>
+        <deviceId>123</deviceId>
+        <deviceKind>Nexus One</deviceKind>
+        <speed>123.43</speed>
+        <measurementTime>5678901</measurementTime>
+        <sensorKind>infrared</sensorKind>
+        <data>0</data>
+    </measurement>
+    <measurement>
+        <latitude>37</latitude>
+        <longitude>-100</longitude>
+        <deviceId>456</deviceId>
+        <deviceKind>Nexus Two</deviceKind>
+        <speed>124.45</speed>
+        <measurementTime>56478901</measurementTime>
+        <sensorKind>infrared</sensorKind>
+        <data>1</data>
+    </measurement>
+    <measurement>
+        <latitude>37</latitude>
+        <longitude>-100</longitude>
+        <deviceId>456</deviceId>
+        <deviceKind>Nexus Three</deviceKind>
+        <speed>24.45</speed>
+        <measurementTime>5647891</measurementTime>
+        <sensorKind>velocity</sensorKind>
+        <data>24.45</data>
+    </measurement>
+</measurements>

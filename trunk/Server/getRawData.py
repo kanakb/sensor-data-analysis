@@ -32,7 +32,7 @@ class GenericDataRetriever(webapp.RequestHandler):
             measurements = fromstring(measXML).getchildren()
             
             # print results for each measurement
-            resp = ''
+            resp = '<measurements>\n'
             for m in measurements:
                 # Making sure input is a set of measurement tags
                 if m.tag != 'measurement':
@@ -44,56 +44,64 @@ class GenericDataRetriever(webapp.RequestHandler):
                 
                 resp += str(innerResp) + '\n'
             
-            self.response.out.write(resp)
-            
+            self.response.out.write(resp + '</measurements>')
         except (CapabilityDisabledError, KeyError, ValueError):
             self.response.out.write("FAILURE")
             
     # Run queries based on the dict to get some XML
     def dictToXML(self, elemDict):
-            # start with everything (query isn't run until told to)
-            q = Measurement.all()
+        # start with everything (query isn't run until told to)
+        q = Measurement.all()
+        
+        # add device kinds
+        if 'deviceKindList' in elemDict and elemDict['deviceKindList']:
+            q = q.filter("deviceKind IN", elemDict['deviceKindList'])
+        
+        # add device IDs
+        if 'deviceIdList' in elemDict and elemDict['deviceIdList']:
+            q = q.filter("deviceId IN", elemDict['deviceIdList'])
+        
+        # add sensor kinds
+        if 'sensorKindList' in elemDict and elemDict['sensorKindList']:
+            q = q.filter("sensorKind IN", elemDict['sensorKindList'])
             
-            # add device kinds
-            if 'deviceKindList' in elemDict and elemDict['deviceKindList']:
-                q = q.filter("deviceKind IN", elemDict['deviceKindList'])
-            
-            # add device IDs
-            if 'deviceIdList' in elemDict and elemDict['deviceIdList']:
-                q = q.filter("deviceId IN", elemDict['deviceIdList'])
-            
-            # add sensor kinds
-            if 'sensorKindList' in elemDict and elemDict['sensorKindList']:
-                q = q.filter("sensorKind IN", elemDict['sensorKindList'])
-                
-            # add time range if possible (filter on this first since lots of speeds will be the same)
+        # add time range if possible (filter on this first since lots of speeds will be the same)
+        timeAdded = False
+        if 'minTime' in elemDict and elemDict['minTime']:
+            q = q.filter("time >", elemDict['minTime']).filter("time <", elemDict['maxTime'])
             timeAdded = True
-            if 'minTime' in elemDict and elemDict['minTime']:
-                q = q.filter("time >", elemDict['minTime']).filter("time <", elemDict['maxTime'])
-            else:
-                timeAdded = False
-                
-            # add speed range if time range not specified
-            speedAdded = True
-            if not timeAdded and 'minSpeed' in elemDict and elemDict['minSpeed']:
+            
+        # add speed range if time range not specified
+        speedNeeded = False
+        speedAdded = False
+        if 'minSpeed' in elemDict and elemDict['minSpeed']:
+            speedNeeded = True
+            if not timeAdded:
                 q = q.filter("speed >", elemDict['minSpeed']).filter("speed <", elemDict['maxSpeed'])
-            else:
-                speedAdded = False
-                
-            # execute the query (with the location data if it is present)
-            results = None
-            if 'minLatitude' in elemDict:
-                results = Measurement.bounding_box_fetch(
-                            q,
-                            geotypes.Box(elemDict['maxLatitude'], elemDict['maxLongitude'], elemDict['minLatitude'], elemDict['minLongitude']),
-                            max_results=500) # 500 is arbitrary; we can play with this number
-            else:
-                results = q.fetch(500)
-                
-            # iterate through results if they exist and get their XML representation
-            if results != None and results:
-                for result in results:
-                    self.response.out.write(self.measurementToXML(result))
+                speedAdded = True
+            
+        # execute the query (with the location data if it is present)
+        results = None
+        if 'minLatitude' in elemDict:
+            # note: latitude in [-90, 90], longitude in [-180, 180]
+            results = Measurement.bounding_box_fetch(
+                        q,
+                        geotypes.Box(elemDict['maxLatitude'], elemDict['maxLongitude'], elemDict['minLatitude'], elemDict['minLongitude']),
+                        max_results=500) # 500 is arbitrary; we can play with this number
+        else:
+            results = q.fetch(500)
+            
+        # iterate through results if they exist and get their XML representation
+        allResults = ''
+        if results != None and results:
+            for result in results:
+                # filter on quantities that GAE couldn't get to
+                if speedNeeded and not speedAdded:
+                    if 'minSpeed' in elemDict and meas.speed > elemDict['minSpeed'] and meas.speed < elemDict['maxSpeed']:
+                        allResults += self.measurementToXML(result) + '\n'
+                else:
+                    allResults += self.measurementToXML(result) + '\n'
+        return allResults
                      
     # given a measurement, return an XML representation
     def measurementToXML(self, meas):
@@ -110,7 +118,7 @@ class GenericDataRetriever(webapp.RequestHandler):
         e.append(deviceKind)
         
         # add time
-        myTime = Element('time')
+        myTime = Element('measurementTime')
         myTime.text = str(senselib.toUnixTime(meas.time))
         e.append(myTime)
         
@@ -130,76 +138,75 @@ class GenericDataRetriever(webapp.RequestHandler):
         e.append(data)
         
         # convert to string and return
-        return tostring(e)
-        
+        xmlstr = tostring(e)
+        if xmlstr != None:
+            return xmlstr
+        else:
+            return ''
     
     # Given a tree, return a dict that summarizes the data
     def treeToDict(self, elemTree):
-        try:
-            # fill search params if they exist
-            sp = {}
-                        
-            # get the minimum/maximum latitude/longtiude
-            minLatitude = elemTree.find('minLatitude')
-            maxLatitude = elemTree.find('maxLatitude')
-            minLongitude = elemTree.find('minLongitude')
-            maxLongitude = elemTree.find('maxLongitude')
-            # all must exist
-            if self.validateElement(minLatitude) and self.validateElement(maxLatitude) and \
-            self.validateElement(minLongitude) and self.validateElement(maxLongitude):
-                sp['minLatitude'] = float(minLatitude.text)
-                sp['maxLatitude'] = float(maxLatitude.text)
-                sp['minLongitude'] = float(minLongitude.text)
-                sp['maxLongitude'] = float(maxLongitude.text)
-                        
-            # get the minimum/maximum time
-            minTime = elemTree.find('minTime')
-            maxTime = elemTree.find('maxTime')
-            # all must exist
-            if self.validateElement(minTime) and self.validateElement(maxTime):
-                sp['minTime'] = senselib.toDateTime(float(minTime.text))
-                sp['maxTime'] = senselib.toDateTime(float(maxTime.text))
-                        
-            # get the minimum/maximum speed
-            minSpeed = elemTree.find('minSpeed')
-            maxSpeed = elemTree.find('maxSpeed')
-            # all must exist
-            if self.validateElement(minSpeed) and self.validateElement(maxSpeed):
-                sp['minSpeed'] = float(minSpeed.text)
-                sp['maxSpeed'] = float(maxSpeed.text)
-            
-            # get all of the deviceKinds to lookup
-            deviceKinds = elemTree.find('deviceKinds')
-            if deviceKinds:
-                deviceKindList = deviceKinds.findall('deviceKind')
-                sp['deviceKindList'] = []
-                for deviceKind in deviceKindList:
-                    if self.validateElement(deviceKind):
-                        sp['deviceKindList'].append(deviceKind.text)
-            
-            # get all of the deviceIds to lookup
-            deviceIds = elemTree.find('deviceIds')
-            if deviceIds:
-                deviceIdList = deviceIds.findall('deviceId')
-                sp['deviceIdList'] = []
-                for deviceId in deviceIdList:
-                    if self.validateElement(deviceId):
-                        sp['deviceIdList'].append(deviceId.text)
-            
-            # get all of the sensorKinds to lookup
-            sensorKinds = elemTree.find('sensorKinds')
-            if sensorKinds:
-                sensorKindList = sensorKinds.findall('sensorKind')
-                sp['sensorKindList'] = []
-                for sensorKind in sensorKindList:
-                    if self.validateElement(sensorKind):
-                        sp['sensorKindList'].append(sensorKind.text)
-            
-            # the dictionary is set up, so return it
-            return sp
-            
-        except:
-            raise ValueError
+        # fill search params if they exist
+        sp = {}
+                    
+        # get the minimum/maximum latitude/longtiude
+        minLatitude = elemTree.find('minLatitude')
+        maxLatitude = elemTree.find('maxLatitude')
+        minLongitude = elemTree.find('minLongitude')
+        maxLongitude = elemTree.find('maxLongitude')
+        # all must exist
+        if self.validateElement(minLatitude) and self.validateElement(maxLatitude) and \
+        self.validateElement(minLongitude) and self.validateElement(maxLongitude):
+            sp['minLatitude'] = float(minLatitude.text)
+            sp['maxLatitude'] = float(maxLatitude.text)
+            sp['minLongitude'] = float(minLongitude.text)
+            sp['maxLongitude'] = float(maxLongitude.text)
+                    
+        # get the minimum/maximum time
+        minTime = elemTree.find('minTime')
+        maxTime = elemTree.find('maxTime')
+        # all must exist
+        if self.validateElement(minTime) and self.validateElement(maxTime):
+            sp['minTime'] = senselib.toDateTime(float(minTime.text))
+            sp['maxTime'] = senselib.toDateTime(float(maxTime.text))
+                    
+        # get the minimum/maximum speed
+        minSpeed = elemTree.find('minSpeed')
+        maxSpeed = elemTree.find('maxSpeed')
+        # all must exist
+        if self.validateElement(minSpeed) and self.validateElement(maxSpeed):
+            sp['minSpeed'] = float(minSpeed.text)
+            sp['maxSpeed'] = float(maxSpeed.text)
+        
+        # get all of the deviceKinds to lookup
+        deviceKinds = elemTree.find('deviceKinds')
+        if deviceKinds:
+            deviceKindList = deviceKinds.findall('deviceKind')
+            sp['deviceKindList'] = []
+            for deviceKind in deviceKindList:
+                if self.validateElement(deviceKind):
+                    sp['deviceKindList'].append(deviceKind.text)
+        
+        # get all of the deviceIds to lookup
+        deviceIds = elemTree.find('deviceIds')
+        if deviceIds:
+            deviceIdList = deviceIds.findall('deviceId')
+            sp['deviceIdList'] = []
+            for deviceId in deviceIdList:
+                if self.validateElement(deviceId):
+                    sp['deviceIdList'].append(deviceId.text)
+        
+        # get all of the sensorKinds to lookup
+        sensorKinds = elemTree.find('sensorKinds')
+        if sensorKinds:
+            sensorKindList = sensorKinds.findall('sensorKind')
+            sp['sensorKindList'] = []
+            for sensorKind in sensorKindList:
+                if self.validateElement(sensorKind):
+                    sp['sensorKindList'].append(sensorKind.text)
+        
+        # the dictionary is set up, so return it
+        return sp
         
     def validateElement(self, elt):
         if elt != None and elt.text and elt.text != '':
