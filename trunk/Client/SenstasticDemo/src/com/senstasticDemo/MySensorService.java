@@ -1,12 +1,14 @@
 package com.senstasticDemo;
 
-import com.senstastic.LocationRequest;
-import com.senstastic.Measurement;
+import android.location.Location;
+
+import com.senstastic.LocationReceiver;
+import com.senstastic.NetworkLocationRequest;
 import com.senstastic.SensorService;
 
-public class MySensorService extends SensorService
+public class MySensorService extends SensorService implements LocationReceiver 
 {
-	LocationRequest locationRequest;
+	NetworkLocationRequest locationRequest;
 	
 	protected int getInterval()
 	{
@@ -15,10 +17,21 @@ public class MySensorService extends SensorService
 	
 	protected void sense()
 	{
-		locationRequest = new LocationRequest(this, 100, 100000);
-		
-		Measurement.generate(this, "MySensor", new Integer(123));
+		locationRequest = new NetworkLocationRequest(this, this, 10000);
 		
 		finish();
+	}
+
+	public void onLocationReceived(Location location) 
+	{
+		
+	}
+	
+	@Override
+	protected void finish()
+	{
+		
+		
+		super.finish();
 	}
 }
