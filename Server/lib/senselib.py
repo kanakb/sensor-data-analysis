@@ -10,13 +10,13 @@ def toHash(s):
     hash = hashlib.md5( salt + str(s) ).hexdigest()
     return str(hash)
     
-# Convert unix time to datetime
+# Convert unix time (msec) to datetime
 def toDateTime(t):
-    return datetime.datetime.fromtimestamp(float(t))
+    return datetime.datetime.fromtimestamp(float(t) / 1000.0)
 
-# Convert datetime to unix time
+# Convert datetime to unix time (msec)
 def toUnixTime(t):
-    return time.mktime(t.timetuple()) + (1e-6) * t.microsecond
+    return (time.mktime(t.timetuple()) + (1e-6) * t.microsecond) * 1000.0
 
 # enum creator, as suggested on StackOverflow
 # Question at: http://stackoverflow.com/q/36932

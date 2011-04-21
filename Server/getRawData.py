@@ -3,7 +3,9 @@
 
 # Python library imports
 from xml.etree.ElementTree import fromstring
+from xml.etree.ElementTree import tostring
 from xml.etree.ElementTree import ElementTree
+from xml.etree.ElementTree import Element
 from sets import Set
 
 # GAE imports
@@ -14,6 +16,7 @@ from google.appengine.runtime.apiproxy_errors import CapabilityDisabledError
 
 # Third party imports
 from third_party.geo import geomodel
+from third_party.geo import geotypes
 
 # Application imports
 from lib import senselib
@@ -52,39 +55,83 @@ class GenericDataRetriever(webapp.RequestHandler):
             q = Measurement.all()
             
             # add device kinds
-            try:
-                if elemDict['deviceKindList']:
-                    q = q.filter("deviceKind IN", elemDict['deviceKindList'])
-            except KeyError:
-                pass
+            if 'deviceKindList' in elemDict and elemDict['deviceKindList']:
+                q = q.filter("deviceKind IN", elemDict['deviceKindList'])
             
             # add device IDs
-            try:
-                if elemDict['deviceIdList']:
-                    q = q.filter("deviceId IN", elemDict['deviceIdList'])
-            except KeyError:
-                pass
+            if 'deviceIdList' in elemDict and elemDict['deviceIdList']:
+                q = q.filter("deviceId IN", elemDict['deviceIdList'])
+            
+            # add sensor kinds
+            if 'sensorKindList' in elemDict and elemDict['sensorKindList']:
+                q = q.filter("sensorKind IN", elemDict['sensorKindList'])
                 
             # add time range if possible (filter on this first since lots of speeds will be the same)
             timeAdded = True
-            try:
-                if elemDict['minTime']:
-                    q = q.filter("time >", elemDict['minTime']).filter("time <", elemDict['maxTime'])
-                else:
-                    timeAdded = False
-            except KeyError:
+            if 'minTime' in elemDict and elemDict['minTime']:
+                q = q.filter("time >", elemDict['minTime']).filter("time <", elemDict['maxTime'])
+            else:
                 timeAdded = False
                 
             # add speed range if time range not specified
             speedAdded = True
-            try:
-                if not timeAdded and elemDict['minSpeed']:
-                    q = q.filter("speed >", elemDict['minSpeed']).filter("speed <", elemDict['maxSpeed'])
-                else:
-                    speedAdded = False
-            except KeyError:
+            if not timeAdded and 'minSpeed' in elemDict and elemDict['minSpeed']:
+                q = q.filter("speed >", elemDict['minSpeed']).filter("speed <", elemDict['maxSpeed'])
+            else:
                 speedAdded = False
                 
+            # execute the query (with the location data if it is present)
+            results = None
+            if 'minLatitude' in elemDict:
+                results = Measurement.bounding_box_fetch(
+                            q,
+                            geotypes.Box(elemDict['maxLatitude'], elemDict['maxLongitude'], elemDict['minLatitude'], elemDict['minLongitude']),
+                            max_results=500) # 500 is arbitrary; we can play with this number
+            else:
+                results = q.fetch(500)
+                
+            # iterate through results if they exist and get their XML representation
+            if results != None and results:
+                for result in results:
+                    self.response.out.write(self.measurementToXML(result))
+                     
+    # given a measurement, return an XML representation
+    def measurementToXML(self, meas):
+        e = Element('measurement')
+        
+        # add device id
+        deviceId = Element('deviceId')
+        deviceId.text = meas.deviceId
+        e.append(deviceId)
+        
+        # add device kind
+        deviceKind = Element('deviceKind')
+        deviceKind.text = meas.deviceKind
+        e.append(deviceKind)
+        
+        # add time
+        myTime = Element('time')
+        myTime.text = str(senselib.toUnixTime(meas.time))
+        e.append(myTime)
+        
+        # add speed
+        speed = Element('speed')
+        speed.text = str(meas.speed)
+        e.append(speed)
+        
+        # add sensor kind
+        sensorKind = Element('sensorKind')
+        sensorKind.text = meas.sensorKind
+        e.append(sensorKind)
+        
+        # add sensor data
+        data = Element('data')
+        data.text = str(meas.data)
+        e.append(data)
+        
+        # convert to string and return
+        return tostring(e)
+        
     
     # Given a tree, return a dict that summarizes the data
     def treeToDict(self, elemTree):
@@ -125,7 +172,7 @@ class GenericDataRetriever(webapp.RequestHandler):
             deviceKinds = elemTree.find('deviceKinds')
             if deviceKinds:
                 deviceKindList = deviceKinds.findall('deviceKind')
-                sp['deviceKindList'] = Set()
+                sp['deviceKindList'] = []
                 for deviceKind in deviceKindList:
                     if self.validateElement(deviceKind):
                         sp['deviceKindList'].append(deviceKind.text)
@@ -134,10 +181,19 @@ class GenericDataRetriever(webapp.RequestHandler):
             deviceIds = elemTree.find('deviceIds')
             if deviceIds:
                 deviceIdList = deviceIds.findall('deviceId')
-                sp['deviceIdList'] = Set()
+                sp['deviceIdList'] = []
                 for deviceId in deviceIdList:
                     if self.validateElement(deviceId):
                         sp['deviceIdList'].append(deviceId.text)
+            
+            # get all of the sensorKinds to lookup
+            sensorKinds = elemTree.find('sensorKinds')
+            if sensorKinds:
+                sensorKindList = sensorKinds.findall('sensorKind')
+                sp['sensorKindList'] = []
+                for sensorKind in sensorKindList:
+                    if self.validateElement(sensorKind):
+                        sp['sensorKindList'].append(sensorKind.text)
             
             # the dictionary is set up, so return it
             return sp
