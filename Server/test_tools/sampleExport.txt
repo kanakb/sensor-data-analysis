@@ -1,0 +1,26 @@
+--- Example 1 ---
+<measurements>
+    <measurement>
+		<minLatitude>0</minLatitude>
+		<maxLatitude>80</maxLatitude>
+		<minLongitude>-170</minLongitude>
+		<maxLongitude>0</maxLongitude>
+    </measurement>
+</measurements>
+
+--- Example 2 ---
+<measurements>
+    <measurement>
+		<deviceKinds>
+			<deviceKind>Nexus Three</deviceKind>
+			<deviceKind>Nexus Two</deviceKind>
+		</deviceKinds>
+		<minLatitude>0</minLatitude>
+		<maxLatitude>80</maxLatitude>
+		<minLongitude>-170</minLongitude>
+		<maxLongitude>0</maxLongitude>
+		<sensorKinds>
+			<sensorKind>infrared</sensorKind>
+		</sensorKinds>
+    </measurement>
+</measurements>

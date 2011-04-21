@@ -40,7 +40,7 @@ class Importer(webapp.RequestHandler):
                 longitude = float(elementTree.findtext('longitude'))
                 mEntry = Measurement(location=db.GeoPt(latitude, longitude))
                 # some fields can be saved as-is
-                mEntry.deviceId = senselib.toHash(elementTree.findtext('deviceId'))
+                mEntry.deviceId = elementTree.findtext('deviceId')
                 mEntry.deviceKind = elementTree.findtext('deviceKind')
                 mEntry.speed = float(elementTree.findtext('speed'))
                 mEntry.sensorKind = elementTree.findtext('sensorKind')
@@ -51,14 +51,14 @@ class Importer(webapp.RequestHandler):
                 # save to datastore if fields all valid
                 if mEntry.deviceId != None and mEntry.deviceKind != None and \
                    latitude != None and longitude != None and mEntry.speed != None and \
-                   mEntry.sensorKind != None and mEntry.sensorData != None and \
+                   mEntry.sensorKind != None and mEntry.data != None and \
                    mEntry.time != None:
                     mEntry.update_location()
                     mEntry.put()
                 
             self.response.out.write("SUCCESS")
             
-        except (KeyError, ValueError, CapabilityDisabledError):
+        except (TypeError, KeyError, ValueError, CapabilityDisabledError):
             self.response.out.write("FAILURE")
 
 application = webapp.WSGIApplication(
