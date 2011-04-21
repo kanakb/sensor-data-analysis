@@ -1,37 +1,32 @@
 package com.senstasticDemo;
 
-import android.location.Location;
-
 import com.senstastic.LocationReceiver;
+import com.senstastic.LocationRequest;
 import com.senstastic.NetworkLocationRequest;
 import com.senstastic.SensorService;
 
 public class MySensorService extends SensorService implements LocationReceiver 
-{
-	NetworkLocationRequest locationRequest;
+{	
+	// Overridden methods.
+	
+	protected String getSensorKind()
+	{
+		return "MySensor";
+	}
 	
 	protected int getInterval()
 	{
-		return 300;
+		return 60;
+	}
+	
+	protected LocationRequest getLocationRequest()
+	{
+		return new NetworkLocationRequest(this, this, 100000);
 	}
 	
 	protected void sense()
 	{
-		locationRequest = new NetworkLocationRequest(this, this, 10000);
-		
-		finish();
-	}
-
-	public void onLocationReceived(Location location) 
-	{
-		
-	}
-	
-	@Override
-	protected void finish()
-	{
-		
-		
-		super.finish();
+		double data = 123.456;
+		finishSensing(data);
 	}
 }

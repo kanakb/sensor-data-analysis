@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
-public class NetworkLocationRequest extends Handler implements LocationListener 
+public class NetworkLocationRequest extends Handler implements LocationRequest, LocationListener 
 {
 	private static final int TIMEOUT_MESSAGE_CODE = 0;
 	
@@ -17,8 +17,11 @@ public class NetworkLocationRequest extends Handler implements LocationListener
 	
 	public NetworkLocationRequest(Context context, LocationReceiver locationReceiver, long timeoutMillis)
 	{
+		// Set the location receiver.
+		this.locationReceiver = locationReceiver;
+		
 		// Set the timeout.
-		sendEmptyMessageAtTime(TIMEOUT_MESSAGE_CODE, timeoutMillis);
+		sendEmptyMessageDelayed(TIMEOUT_MESSAGE_CODE, timeoutMillis);
 		
 		// Get the location manager.
 		locationManager = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);

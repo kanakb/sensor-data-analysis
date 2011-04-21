@@ -6,31 +6,13 @@ public class Measurement
 {	
 	private static String MEASUREMENTS_DIRECTORY_NAME = "measurements";
 	
-	private Context context;
-	
-	private String deviceId;
-	private String deviceKind;
-	private String sensorKind;
-	private long time;
-	private float latitude;
-	private float longitude;
-	private Object data;
-	
-	public Measurement(Context context, String sensorKind, long time, float latitude, float longitude, Object data)
-	{	
-		this.context = context;
-		
-		this.deviceId = Device.getDeviceId(context);
-		this.deviceKind = "";
-		this.sensorKind = sensorKind;
-		this.time = time;
-		this.latitude = latitude;
-		this.longitude = longitude;
-		this.data = data;
-		
-		// TODO: Change.
-		save();
-	}
+	public String deviceId;
+	public String deviceKind;
+	public String sensorKind;
+	public long time;
+	public double latitude;
+	public double longitude;
+	public Object data;
 	
 	private String getXmlString()
 	{
@@ -46,7 +28,7 @@ public class Measurement
 		return gen.end();
 	}
 	
-	private void save()
+	public void save(Context context)
 	{
 		String fileName = sensorKind + "_" + time + ".xml";
 		
