@@ -38,6 +38,9 @@ public class XMLStringGenerator
 	{
 		try
 		{
+			if (value == null)
+				return;
+			
 			xmlSerializer.startTag(null, tagName);
 			
 			String text;
