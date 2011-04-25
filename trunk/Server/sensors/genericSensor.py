@@ -5,7 +5,7 @@
 from lib import senselib
 
 # define an emum describing the domain of the sensor data
-DataType = senselib.enum('List', 'Range')
+DataType = senselib.enum('List', 'IntRange', 'FloatRange')
 
 class GenericSensor:
     # set key sensor properties

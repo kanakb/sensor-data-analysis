@@ -15,4 +15,8 @@ class Measurement(geomodel.GeoModel):
     time = db.DateTimeProperty()
     sensorKind = db.StringProperty()
     data = db.BlobProperty()
+    floatData = db.FloatProperty()
+    intData = db.IntegerProperty()
+    stringData = db.StringProperty()
+    
     

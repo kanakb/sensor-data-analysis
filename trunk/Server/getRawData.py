@@ -21,6 +21,8 @@ from third_party.geo import geotypes
 # Application imports
 from lib import senselib
 from lib.schemas import Measurement
+from sensors import sensorChooser
+from sensors.genericSensor import DataType
 
 # Base functionality for getting data
 class GenericDataRetriever(webapp.RequestHandler):
@@ -65,6 +67,10 @@ class GenericDataRetriever(webapp.RequestHandler):
         if 'sensorKindList' in elemDict and elemDict['sensorKindList']:
             q = q.filter("sensorKind IN", elemDict['sensorKindList'])
             
+        # add data list if it exists
+        if 'dataList' in elemDict and elemDict['dataList']:
+            q = q.filter("stringData IN", elemDict['dataList'])
+            
         # add time range if possible (filter on this first since lots of speeds will be the same)
         timeAdded = False
         if 'minTime' in elemDict and elemDict['minTime']:
@@ -74,11 +80,29 @@ class GenericDataRetriever(webapp.RequestHandler):
         # add speed range if time range not specified
         speedNeeded = False
         speedAdded = False
-        if 'minSpeed' in elemDict and elemDict['minSpeed']:
+        if 'minSpeed' in elemDict and elemDict['minSpeed'] != None:
             speedNeeded = True
             if not timeAdded:
-                q = q.filter("speed >", elemDict['minSpeed']).filter("speed <", elemDict['maxSpeed'])
+                q = q.filter("speed >=", elemDict['minSpeed']).filter("speed <=", elemDict['maxSpeed'])
                 speedAdded = True
+            
+        # add int data range if time and speed range not specified
+        intDataNeeded = False
+        intDataAdded = False
+        if 'minIntData' in elemDict and elemDict['minIntData'] != None:
+            intDataNeeded = True
+            if not timeAdded and not speedAdded:
+                q = q.filter("intData >=", elemDict['minIntData']).filter("intData <=", elemDict['maxIntData'])
+                intDataAdded = True
+            
+        # add float data range if time and speed range not specified
+        floatDataNeeded = False
+        floatDataAdded = False
+        if 'minFloatData' in elemDict and elemDict['minFloatData'] != None:
+            floatDataNeeded = True
+            if not timeAdded and not speedAdded:
+                q = q.filter("floatData >=", elemDict['minFloatData']).filter("floatData <=", elemDict['maxFloatData'])
+                floatDataAdded = True
             
         # execute the query (with the location data if it is present)
         results = None
@@ -96,10 +120,17 @@ class GenericDataRetriever(webapp.RequestHandler):
         if results != None and results:
             for result in results:
                 # filter on quantities that GAE couldn't get to
+                toAdd = True
                 if speedNeeded and not speedAdded:
-                    if 'minSpeed' in elemDict and meas.speed > elemDict['minSpeed'] and meas.speed < elemDict['maxSpeed']:
-                        allResults += self.measurementToXML(result) + '\n'
-                else:
+                    if not ('minSpeed' in elemDict and result.speed >= elemDict['minSpeed'] and result.speed <= elemDict['maxSpeed']):
+                        toAdd = False
+                if intDataNeeded and not intDataAdded:
+                    if not ('minIntData' in elemDict and result.intData >= elemDict['minIntData'] and result.intData <= elemDict['maxIntData']):
+                        toAdd = False
+                if floatDataNeeded and not floatDataAdded:
+                    if not ('minFloatData' in elemDict and result.floatData >= elemDict['minFloatData'] and result.floatData <= elemDict['maxFloatData']):
+                        toAdd = False
+                if toAdd:
                     allResults += self.measurementToXML(result) + '\n'
         return allResults
                      
@@ -198,12 +229,49 @@ class GenericDataRetriever(webapp.RequestHandler):
         
         # get all of the sensorKinds to lookup
         sensorKinds = elemTree.find('sensorKinds')
+        numSensors = 0
+        sensorText = ""
         if sensorKinds:
             sensorKindList = sensorKinds.findall('sensorKind')
             sp['sensorKindList'] = []
             for sensorKind in sensorKindList:
                 if self.validateElement(sensorKind):
                     sp['sensorKindList'].append(sensorKind.text)
+                    numSensors += 1
+                    sensorText = sensorKind.text
+        
+        # check if we can support data (only support for single sensor queries)
+        sensorType = None
+        if numSensors == 1:
+            sensorType = sensorChooser.getSensorObject(sensorText).getDataType()
+            
+        # get data as a list
+        if sensorType == DataType.List:
+            dataValues = elemTree.find('dataValues')
+            if dataValues:
+                dataList = dataValues.findall('data')
+                sp['dataList'] = []
+                for data in dataList:
+                    if self.validateElement(data):
+                        sp['dataList'].append(data.text)
+                        
+        # get data as an int range
+        elif sensorType == DataType.IntRange:
+            minData = elemTree.find('minData')
+            maxData = elemTree.find('maxData')
+            # all must exist
+            if self.validateElement(minData) and self.validateElement(maxData):
+                sp['minIntData'] = int(minData.text)
+                sp['maxIntData'] = int(maxData.text)
+                        
+        # get data as a float range
+        elif sensorType == DataType.FloatRange:
+            minData = elemTree.find('minData')
+            maxData = elemTree.find('maxData')
+            # all must exist
+            if self.validateElement(minData) and self.validateElement(maxData):
+                sp['minFloatData'] = float(minData.text)
+                sp['maxFloatData'] = float(maxData.text)
         
         # the dictionary is set up, so return it
         return sp

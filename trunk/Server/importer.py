@@ -18,6 +18,8 @@ from third_party.geo import geomodel
 # Application imports
 from lib import senselib
 from lib.schemas import Measurement
+from sensors import sensorChooser
+from sensors.genericSensor import DataType
     
 # Manage incoming sensor data
 class Importer(webapp.RequestHandler):
@@ -51,8 +53,17 @@ class Importer(webapp.RequestHandler):
                 # save to datastore if fields all valid
                 if mEntry.deviceId != None and mEntry.deviceKind != None and \
                    latitude != None and longitude != None and mEntry.speed != None and \
-                   mEntry.sensorKind != None and mEntry.data != None and \
                    mEntry.time != None:
+                    # add searchable data if possible
+                    if mEntry.sensorKind != None and mEntry.data != None:
+                        dataType = sensorChooser.getSensorObject(mEntry.sensorKind).getDataType()
+                        if dataType == DataType.IntRange:
+                            mEntry.intData = int(mEntry.data)
+                        elif dataType == DataType.FloatRange:
+                            mEntry.floatData = float(mEntry.data)
+                        elif dataType == DataType.List:
+                            mEntry.stringData = str(mEntry.data)
+                    # update location and save everything
                     mEntry.update_location()
                     mEntry.put()
                 
