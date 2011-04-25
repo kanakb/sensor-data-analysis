@@ -36,9 +36,15 @@ public class FileUtility
 	
 	public static String readFile(Context context, String directoryName, String fileName)
 	{
+		File file = getFile(context, directoryName, fileName);
+		return readFile(file);
+	}
+	
+	public static String readFile(File file)
+	{
 		try
 		{
-			FileInputStream fileInputStream = new FileInputStream(getFile(context, directoryName, fileName));
+			FileInputStream fileInputStream = new FileInputStream(file);
 			
 			StringBuilder stringBuilder = new StringBuilder();
 			int ch;
@@ -61,6 +67,11 @@ public class FileUtility
 		getFile(context, directoryName, fileName).delete();
 	}
 	
+	public static void deleteFile(File file)
+	{
+		file.delete();
+	}
+	
 	private static File getFile(Context context, String directoryName, String fileName)
 	{
 		return new File(context.getFilesDir().getAbsolutePath() + File.separator + directoryName + File.separator + fileName);
@@ -69,5 +80,18 @@ public class FileUtility
 	private static File getDirectory(Context context, String directoryName)
 	{
 		return new File(context.getFilesDir().getAbsolutePath() + File.separator + directoryName);
+	}
+	
+	public static File[] getDirectoryFiles(Context context, String directoryName)
+	{
+		try
+		{
+			return getDirectory(context, directoryName).listFiles();
+		}
+		catch(Exception e)
+		{
+			Logger.e("Could not get directory's files!");
+			return null;
+		}
 	}
 }
