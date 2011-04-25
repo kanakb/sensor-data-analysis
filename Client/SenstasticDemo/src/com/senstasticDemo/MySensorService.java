@@ -1,9 +1,9 @@
 package com.senstasticDemo;
 
-import com.senstastic.LocationReceiver;
-import com.senstastic.LocationRequest;
-import com.senstastic.NetworkLocationRequest;
 import com.senstastic.SensorService;
+import com.senstastic.location.LocationReceiver;
+import com.senstastic.location.LocationRequest;
+import com.senstastic.location.NetworkLocationRequest;
 
 public class MySensorService extends SensorService implements LocationReceiver 
 {	

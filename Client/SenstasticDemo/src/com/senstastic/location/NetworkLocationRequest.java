@@ -1,4 +1,4 @@
-package com.senstastic;
+package com.senstastic.location;
 
 import android.content.Context;
 import android.location.Location;
