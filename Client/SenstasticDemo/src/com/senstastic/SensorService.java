@@ -78,6 +78,9 @@ public class SensorService extends Service implements LocationReceiver
 	
 	private void finish()
 	{
+	    // Before we stop this service, use it send out any saved measurements from any sensors if we happen to have wifi.
+	    Measurement.attemptToSendSavedMeasurements(this);
+		
 		// Release the wake lock.
 		releaseWakeLock();
 		

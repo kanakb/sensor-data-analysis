@@ -1,5 +1,6 @@
 package com.senstastic;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -38,11 +39,7 @@ public class Measurement
 		this.time = (new Date()).getTime();
 		this.data = data;
 		
-		// Send the measurement or save it.
-		if (ConnectionInfo.isWifiAvailable(context))
-			send();
-		else
-			save();
+		sendOrSave();
 	}
 	
 	private String getXmlString()
@@ -64,6 +61,17 @@ public class Measurement
 		return sensorKind + "_" + time + ".xml";
 	}
 	
+	private void sendOrSave()
+	{
+		if (!ConnectionInfo.isWifiAvailable(context) || !send())
+			save();
+	}	
+	
+	private boolean send()
+	{
+		return sendXMLString(getXmlString());
+	}
+	
 	private void save()
 	{
 		synchronized (FileUtility.class) 
@@ -73,15 +81,7 @@ public class Measurement
 		}
 	}
 	
-	private void delete()
-	{
-		synchronized (FileUtility.class)
-		{
-			FileUtility.deleteFile(context, MEASUREMENTS_DIRECTORY_NAME, getFileName());
-		}
-	}
-	
-	private void send()
+	private static boolean sendXMLString(String xml)
 	{
 	    try 
 	    {
@@ -90,17 +90,47 @@ public class Measurement
 	    	
 	    	// Build the post data.
 	        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-	        nameValuePairs.add(new BasicNameValuePair("xml", getXmlString()));
+	        nameValuePairs.add(new BasicNameValuePair("xml", xml));
 	        httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
 	        // Execute the post.
 	        HttpResponse response = httpClient.execute(httpPost);
 	        
-	        // TODO: Delete measurement on successful response.
+	        // TODO: Return true or false based on response.
+	        return true;
 	    } 
 	    catch (Exception e)
 	    {
 	    	Logger.e("Error sending measurement!");
+	    	return false;
 	    }
+	}
+	
+	// Dealing with saved measurements.
+	
+	public static void attemptToSendSavedMeasurements(Context context)
+	{
+		if (ConnectionInfo.isWifiAvailable(context))
+			sendSavedMeasurements(context);
+	}
+	
+	private static void sendSavedMeasurements(Context context)
+	{
+		synchronized (FileUtility.class)
+		{
+			File[] files = FileUtility.getDirectoryFiles(context, MEASUREMENTS_DIRECTORY_NAME);
+			
+			for (File file : files)
+			{
+				String xmlString = FileUtility.readFile(file);
+				
+				// Try to send the measurement and clean up its file if it is sent out correctly.
+				if (sendXMLString(xmlString))
+					FileUtility.deleteFile(file);
+				// If sending one measurement failed, don't try to send more.
+				else
+					return;
+			}
+		}
 	}
 }
