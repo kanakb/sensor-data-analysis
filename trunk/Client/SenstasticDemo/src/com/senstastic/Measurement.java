@@ -1,18 +1,33 @@
 package com.senstastic;
 
+import java.util.Date;
+
 import android.content.Context;
 
 public class Measurement 
 {	
 	private static String MEASUREMENTS_DIRECTORY_NAME = "measurements";
 	
-	public String deviceId;
-	public String deviceKind;
-	public String sensorKind;
-	public long time;
-	public double latitude;
-	public double longitude;
-	public Object data;
+	private Context context;
+	
+	private String deviceId;
+	private String deviceKind;
+	private String sensorKind;
+	private long time;
+	private double latitude;
+	private double longitude;
+	private Object data;
+	
+	public Measurement(Context context, String sensorKind, Object data, double latitude, double longitude)
+	{
+		this.context = context;
+		
+		this.deviceId = Device.getDeviceId(context);
+		this.deviceKind = Device.getDeviceKind();
+		this.sensorKind = sensorKind;
+		this.time = (new Date()).getTime();
+		this.data = data;
+	}
 	
 	private String getXmlString()
 	{
@@ -28,7 +43,7 @@ public class Measurement
 		return gen.end();
 	}
 	
-	public void save(Context context)
+	public void save()
 	{
 		String fileName = sensorKind + "_" + time + ".xml";
 		

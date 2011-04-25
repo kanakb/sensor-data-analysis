@@ -1,7 +1,5 @@
 package com.senstastic;
 
-import java.util.Date;
-
 import com.senstastic.location.LocationReceiver;
 import com.senstastic.location.LocationRequest;
 import com.senstastic.location.NetworkLocationRequest;
@@ -18,9 +16,9 @@ public class SensorService extends Service implements LocationReceiver
 {
 	private static final String WAKE_LOCK_TAG = "SensorService";
 	
-	WakeLock wakeLock;
-	Measurement measurement;
-	LocationRequest locationRequest;
+	private WakeLock wakeLock;
+	private Object data;
+	private LocationRequest locationRequest;
 	
 	public SensorService() 
 	{
@@ -56,13 +54,8 @@ public class SensorService extends Service implements LocationReceiver
 	
 	protected void finishSensing(Object data)
 	{	
-		// Create the measurement.
-		measurement = new Measurement();
-		measurement.deviceId = Device.getDeviceId(this);
-		measurement.deviceKind = Device.getDeviceKind();
-		measurement.sensorKind = getSensorKind();
-		measurement.time = (new Date()).getTime();
-		measurement.data = data;
+		// Save the data until the location request finishes.
+		this.data = data;
 		
 		// Start the location request.
 		locationRequest = getLocationRequest();
@@ -78,11 +71,10 @@ public class SensorService extends Service implements LocationReceiver
 		}
 		
 		// If location acquisition succeeded.
-		measurement.latitude = location.getLatitude();
-		measurement.longitude = location.getLongitude();
+		Measurement measurement = new Measurement(this, getSensorKind(), data, location.getLatitude(), location.getLongitude());
 		
 		// TODO: Change.
-		measurement.save(this);
+		measurement.save();
 		
 		finish();
 	}
