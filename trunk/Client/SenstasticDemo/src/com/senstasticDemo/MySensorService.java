@@ -1,11 +1,8 @@
 package com.senstasticDemo;
 
 import com.senstastic.SensorService;
-import com.senstastic.location.LocationReceiver;
-import com.senstastic.location.LocationRequest;
-import com.senstastic.location.NetworkLocationRequest;
 
-public class MySensorService extends SensorService implements LocationReceiver 
+public class MySensorService extends SensorService
 {	
 	// Overridden methods.
 	
@@ -17,11 +14,6 @@ public class MySensorService extends SensorService implements LocationReceiver
 	protected int getInterval()
 	{
 		return 60;
-	}
-	
-	protected LocationRequest getLocationRequest()
-	{
-		return new NetworkLocationRequest(this, this, 100000);
 	}
 	
 	protected void sense()

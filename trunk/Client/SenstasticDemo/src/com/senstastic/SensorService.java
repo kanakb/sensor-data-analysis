@@ -70,11 +70,8 @@ public class SensorService extends Service implements LocationReceiver
 			return;
 		}
 		
-		// If location acquisition succeeded.
-		Measurement measurement = new Measurement(this, getSensorKind(), data, location.getLatitude(), location.getLongitude());
-		
-		// TODO: Change.
-		measurement.save();
+		// If location acquisition succeeded, create the new measurement.
+		new Measurement(this, getSensorKind(), data, location.getLatitude(), location.getLongitude());
 		
 		finish();
 	}
@@ -120,6 +117,6 @@ public class SensorService extends Service implements LocationReceiver
 	
 	protected void sense()
 	{
-
+		finishSensing(null);
 	}
 }

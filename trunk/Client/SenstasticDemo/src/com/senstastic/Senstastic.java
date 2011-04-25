@@ -9,6 +9,13 @@ import android.content.Intent;
 
 public class Senstastic 
 {
+	public static String endpointURL;
+	
+	public static void init(String endpointURL)
+	{
+		Senstastic.endpointURL = endpointURL;
+	}
+	
 	public static void schedule(Context context, Class<? extends SensorService> sensorServiceClass)
 	{
 		// Get the interval.

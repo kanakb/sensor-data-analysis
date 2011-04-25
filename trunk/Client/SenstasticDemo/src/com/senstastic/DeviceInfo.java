@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import android.content.Context;
 
-public class Device 
+public class DeviceInfo 
 {
 	private static String DEVICE_DIRECTORY_NAME = "device";
 	private static String DEVICE_ID_FILE_NAME = "id";
