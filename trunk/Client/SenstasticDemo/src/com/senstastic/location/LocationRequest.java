@@ -1,4 +1,4 @@
-package com.senstastic;
+package com.senstastic.location;
 
 public interface LocationRequest 
 {

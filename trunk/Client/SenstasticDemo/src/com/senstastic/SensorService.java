@@ -2,6 +2,10 @@ package com.senstastic;
 
 import java.util.Date;
 
+import com.senstastic.location.LocationReceiver;
+import com.senstastic.location.LocationRequest;
+import com.senstastic.location.NetworkLocationRequest;
+
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
