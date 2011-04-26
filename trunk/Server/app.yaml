@@ -7,7 +7,7 @@ handlers:
 - url: /import
   script: importer.py
 - url: /getRawData
-  script: getRawData.pys
+  script: getRawData.py
 - url: /insert
   script: test_tools/insert.py
 - url: /extract
