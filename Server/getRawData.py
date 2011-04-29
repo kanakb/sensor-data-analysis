@@ -71,36 +71,27 @@ class GenericDataRetriever(webapp.RequestHandler):
         if 'dataList' in elemDict and elemDict['dataList']:
             q = q.filter("stringData IN", elemDict['dataList'])
             
-        # add time range if possible (filter on this first since lots of speeds will be the same)
+        # add time range if possible (filter on this first since lots of data will be the same)
         timeAdded = False
         if 'minTime' in elemDict and elemDict['minTime']:
             q = q.filter("time >", elemDict['minTime']).filter("time <", elemDict['maxTime'])
             timeAdded = True
             
-        # add speed range if time range not specified
-        speedNeeded = False
-        speedAdded = False
-        if 'minSpeed' in elemDict and elemDict['minSpeed'] != None:
-            speedNeeded = True
-            if not timeAdded:
-                q = q.filter("speed >=", elemDict['minSpeed']).filter("speed <=", elemDict['maxSpeed'])
-                speedAdded = True
-            
-        # add int data range if time and speed range not specified
+        # add int data range if time not specified
         intDataNeeded = False
         intDataAdded = False
         if 'minIntData' in elemDict and elemDict['minIntData'] != None:
             intDataNeeded = True
-            if not timeAdded and not speedAdded:
+            if not timeAdded:
                 q = q.filter("intData >=", elemDict['minIntData']).filter("intData <=", elemDict['maxIntData'])
                 intDataAdded = True
             
-        # add float data range if time and speed range not specified
+        # add float data range if time not specified
         floatDataNeeded = False
         floatDataAdded = False
         if 'minFloatData' in elemDict and elemDict['minFloatData'] != None:
             floatDataNeeded = True
-            if not timeAdded and not speedAdded:
+            if not timeAdded:
                 q = q.filter("floatData >=", elemDict['minFloatData']).filter("floatData <=", elemDict['maxFloatData'])
                 floatDataAdded = True
             
@@ -121,9 +112,6 @@ class GenericDataRetriever(webapp.RequestHandler):
             for result in results:
                 # filter on quantities that GAE couldn't get to
                 toAdd = True
-                if speedNeeded and not speedAdded:
-                    if not ('minSpeed' in elemDict and result.speed >= elemDict['minSpeed'] and result.speed <= elemDict['maxSpeed']):
-                        toAdd = False
                 if intDataNeeded and not intDataAdded:
                     if not ('minIntData' in elemDict and result.intData >= elemDict['minIntData'] and result.intData <= elemDict['maxIntData']):
                         toAdd = False
@@ -149,14 +137,9 @@ class GenericDataRetriever(webapp.RequestHandler):
         e.append(deviceKind)
         
         # add time
-        myTime = Element('measurementTime')
+        myTime = Element('time')
         myTime.text = str(senselib.toUnixTime(meas.time))
         e.append(myTime)
-        
-        # add speed
-        speed = Element('speed')
-        speed.text = str(meas.speed)
-        e.append(speed)
         
         # add sensor kind
         sensorKind = Element('sensorKind')
@@ -200,14 +183,6 @@ class GenericDataRetriever(webapp.RequestHandler):
         if self.validateElement(minTime) and self.validateElement(maxTime):
             sp['minTime'] = senselib.toDateTime(float(minTime.text))
             sp['maxTime'] = senselib.toDateTime(float(maxTime.text))
-                    
-        # get the minimum/maximum speed
-        minSpeed = elemTree.find('minSpeed')
-        maxSpeed = elemTree.find('maxSpeed')
-        # all must exist
-        if self.validateElement(minSpeed) and self.validateElement(maxSpeed):
-            sp['minSpeed'] = float(minSpeed.text)
-            sp['maxSpeed'] = float(maxSpeed.text)
         
         # get all of the deviceKinds to lookup
         deviceKinds = elemTree.find('deviceKinds')

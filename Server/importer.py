@@ -44,15 +44,14 @@ class Importer(webapp.RequestHandler):
                 # some fields can be saved as-is
                 mEntry.deviceId = elementTree.findtext('deviceId')
                 mEntry.deviceKind = elementTree.findtext('deviceKind')
-                mEntry.speed = float(elementTree.findtext('speed'))
                 mEntry.sensorKind = elementTree.findtext('sensorKind')
                 mEntry.data = elementTree.findtext('data')
                 # convert unix time to datetime
-                utime = elementTree.findtext('measurementTime')
+                utime = elementTree.findtext('time')
                 mEntry.time = senselib.toDateTime(utime)
                 # save to datastore if fields all valid
                 if mEntry.deviceId != None and mEntry.deviceKind != None and \
-                   latitude != None and longitude != None and mEntry.speed != None and \
+                   latitude != None and longitude != None and \
                    mEntry.time != None:
                     # add searchable data if possible
                     if mEntry.sensorKind != None and mEntry.data != None:
