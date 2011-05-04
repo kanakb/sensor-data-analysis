@@ -13,7 +13,7 @@ public class SenstasticDemo extends Activity
         
         setContentView(R.layout.main);
 
-        Senstastic.init("http://dudeitworks.com");
+        Senstastic.init("http://sensor-analysis.appspot.com/import");
         Senstastic.schedule(this, MySensorService.class);
     }
 }
