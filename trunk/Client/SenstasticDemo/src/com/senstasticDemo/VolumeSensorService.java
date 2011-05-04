@@ -7,7 +7,7 @@ import android.media.MediaRecorder;
 import com.senstastic.Logger;
 import com.senstastic.SensorService;
 
-public class MySensorService extends SensorService
+public class VolumeSensorService extends SensorService
 {	
 	// Overridden methods.
 	
@@ -40,7 +40,7 @@ public class MySensorService extends SensorService
             // Start recording.
 	        audioRecorder.startRecording();
 	        
-	        // Take audio samples and keep track of the maximum short value throughout all of the sample.
+	        // Take audio samples and keep track of the maximum short value throughout all of the samples.
 	        short max = Short.MIN_VALUE;
 	        for (int s = 0; s < numSamples; s++)
 	        {
@@ -57,8 +57,6 @@ public class MySensorService extends SensorService
 		        	if (sampleData[i] > max)
 		        		max = sampleData[i];
 		        }
-		        	
-		        ////Thread.sleep(sampleLengthInSec);
 	        }
 	        
 	        // Stop recording.
@@ -66,14 +64,15 @@ public class MySensorService extends SensorService
 	        
 	        Logger.d("max: " + max);
 	        
-	        // Finish sensing.
+	        // Finish sensing and create a measurement with the maximum volume data, which will eventually be pushed to the server by the Senstastic engine.
 			finishSensing(max);
 		}
 		catch(Exception e)
 		{
-			// TODO: Finish sensing.
-			
 			Logger.e(e.getMessage());
+			
+			// Finish sensing without creating a measurement or sending any results from this sensing session to the server.
+			finishSensing();
 		}
 
 	}
