@@ -25,6 +25,8 @@ public class VolumeSensorService extends SensorService
 	{
 		try
 		{
+			Logger.d("Sensing started");
+			
 			// Set the recording length.
 			double recordLengthInSecs = 5.0;
 			
