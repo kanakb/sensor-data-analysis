@@ -90,6 +90,7 @@ public class Measurement
 	        postDataNameValuePairs.add(new BasicNameValuePair("xml", xml));
 
 	        // Execute the http request.
+	        Logger.d("HTTP request:" + xml);
 	        String responseBody = HttpUtility.executeHttpRequest(Senstastic.endpointURL, postDataNameValuePairs);
 	        Logger.d("HTTP response body: " + responseBody);
 	        return responseBody.equals(SUCCESS_HTTP_RESPONSE_BODY);
@@ -114,6 +115,8 @@ public class Measurement
 		synchronized (FileUtility.class)
 		{
 			File[] files = FileUtility.getDirectoryFiles(context, MEASUREMENTS_DIRECTORY_NAME);
+			
+			Logger.d("Will send out saved measurements: " + files.length);
 			
 			for (File file : files)
 			{
