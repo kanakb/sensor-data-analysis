@@ -52,6 +52,28 @@ public class SensorService extends Service implements LocationReceiver
 		}
 	}
 	
+	/*
+	 * Creates a measurement with the provided data and location, 
+	 * pushes the measurement out to the server when convenient,
+	 * stops the service. 
+	 * This is good for SensorServices that fetch their own location in their own way, 
+	 * perhaps to collect additional data like speed and altitude to put in the data field of the measurement.
+	 */
+	protected void finishSensing(Object data, double latitude, double longitude)
+	{
+		// Create the new measurement with the passed in data and location.
+		new Measurement(this, getSensorKind(), data, latitude, longitude);
+		
+		finish();
+	}
+
+	/*
+	 * Issues a location request based on the LocationRequest type return in getLocationRequest(),
+	 * creates a measurement with the provided data and the result of the location request,
+	 * pushes the measurement out to the server when convenient,
+	 * stops the service. 
+	 * If the location request fails, drops the measurements.
+	 */	
 	protected void finishSensing(Object data)
 	{	
 		// Save the data until the location request finishes.

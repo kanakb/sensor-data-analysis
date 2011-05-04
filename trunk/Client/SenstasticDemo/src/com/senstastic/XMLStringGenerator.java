@@ -34,6 +34,30 @@ public class XMLStringGenerator
 		}
 	}
 	
+	public void startTag(String tagName)
+	{
+		try
+		{
+			xmlSerializer.startTag(null, tagName);
+		}
+		catch(Exception e)
+		{
+			error();
+		}
+	}
+	
+	public void endTag(String tagName)
+	{
+		try
+		{
+			xmlSerializer.endTag(null, tagName);
+		}
+		catch(Exception e)
+		{
+			error();
+		}
+	}	
+	
 	public void addTag(String tagName, Object value)
 	{
 		try
