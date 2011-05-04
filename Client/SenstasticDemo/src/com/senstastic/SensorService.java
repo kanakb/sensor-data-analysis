@@ -82,6 +82,15 @@ public class SensorService extends Service implements LocationReceiver
 		// Start the location request.
 		locationRequest = getLocationRequest();
 	}
+	
+	/*
+	 * Call this function when you would like your sensor service to finish sensing without pushing anything out to the server.
+	 * For example, if your sensor service encounters and error and should not create and send a measurement, then call this function to end the service. 
+	 */
+	protected void finishSensing()
+	{
+		finish();
+	}
 
 	public void onLocationReceived(Location location)
 	{
