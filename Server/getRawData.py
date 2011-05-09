@@ -29,8 +29,15 @@ class GenericDataRetriever(webapp.RequestHandler):
     def post(self):
         self.response.headers['Content-Type'] = 'text/plain'
         try:
-            # Intialize a tree with the input XML
             measXML = self.request.get('xml')
+            self.response.out.write(self.generateResponse(measXML))
+        except (CapabilityDisabledError, KeyError, ValueError):
+            self.response.out.write("FAILURE")
+            
+    # Generic XML request --> XML response conversion
+    def generateResponse(self, measXML):
+        try:
+            # Intialize a tree with the input XML
             measurements = fromstring(measXML).getchildren()
             
             # print results for each measurement
@@ -46,9 +53,9 @@ class GenericDataRetriever(webapp.RequestHandler):
                 
                 resp += str(innerResp) + '\n'
             
-            self.response.out.write(resp + '</measurements>')
+            return (resp + '</measurements>')
         except (CapabilityDisabledError, KeyError, ValueError):
-            self.response.out.write("FAILURE")
+            return "FAILURE"
             
     # Run queries based on the dict to get some XML
     def dictToXML(self, elemDict):
