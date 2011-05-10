@@ -10,6 +10,8 @@ handlers:
   script: getRawData.py
 - url: /heatgridGen
   script: heatgridGen.py
+- url: /heatgrid.xml
+  script: heatgridGen.py
 - url: /insert
   script: test_tools/insert.py
 - url: /extract
