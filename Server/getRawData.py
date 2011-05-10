@@ -143,6 +143,16 @@ class GenericDataRetriever(webapp.RequestHandler):
         deviceKind.text = meas.deviceKind
         e.append(deviceKind)
         
+        # add latitude
+        latitude = Element('latitude')
+        latitude.text = str(meas.location.lat)
+        e.append(latitude)
+        
+        # add longtiude
+        longitude = Element('longitude')
+        longitude.text = str(meas.location.lon)
+        e.append(longitude)
+        
         # add time
         myTime = Element('time')
         myTime.text = str(senselib.toUnixTime(meas.time))

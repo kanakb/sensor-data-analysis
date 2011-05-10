@@ -8,9 +8,13 @@ handlers:
   script: importer.py
 - url: /getRawData
   script: getRawData.py
+- url: /heatgridGen
+  script: heatgridGen.py
 - url: /insert
   script: test_tools/insert.py
 - url: /extract
   script: test_tools/extract.py
+- url: /extractAggregate
+  script: test_tools/extractAggregate.py
 - url: /.*
   script: error.py
