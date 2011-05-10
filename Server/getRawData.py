@@ -27,7 +27,7 @@ from sensors.genericSensor import DataType
 # Base functionality for getting data
 class GenericDataRetriever(webapp.RequestHandler):
     def post(self):
-        self.response.headers['Content-Type'] = 'text/plain'
+        self.response.headers['Content-Type'] = 'text/xml'
         try:
             measXML = self.request.get('xml')
             self.response.out.write(self.generateResponse(measXML))
@@ -41,7 +41,8 @@ class GenericDataRetriever(webapp.RequestHandler):
             measurements = fromstring(measXML).getchildren()
             
             # print results for each measurement
-            resp = '<measurements>\n'
+            resp = '<?xml version="1.0" encoding="UTF-8"?>\n'
+            resp += '<measurements>\n'
             for m in measurements:
                 # Making sure input is a set of measurement tags
                 if m.tag != 'measurement':
