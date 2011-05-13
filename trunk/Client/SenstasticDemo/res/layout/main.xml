@@ -1,21 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="#ffffff"  >
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:orientation="vertical"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:background="@drawable/background">
 
-    <TextView
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:textColor="#000000"
-    android:text="This is Activity 1" />
+	    <TextView
+	    	android:layout_height="wrap_content"
+	    	android:layout_gravity="center"
+	    	android:layout_width="wrap_content" 
+	    	android:text="@string/app_name" 
+	    	android:textSize="30sp"
+	    	android:textColor="#FFFFFF" 
+	    	android:textStyle="bold"
+	    	android:padding="20dp"/>
 
-       <Button android:text="Next"
-        android:id="@+id/Button01"
-        android:layout_width="250px"
-            android:textSize="18px"
-        android:layout_height="55px">
-    </Button>    
-
-</LinearLayout>
+	    <Button android:text="View Aggregate Map"
+   	    	android:id="@+id/aggregateMapButton"
+        	android:textSize="20sp"
+        	android:layout_width="250dp" 
+        	android:layout_height="wrap_content"
+        	android:layout_gravity="center"/>
+        	
+       	<Button android:text="View Personal Map"
+   	    	android:id="@+id/personalMapButton"
+        	android:textSize="20sp"
+        	android:layout_width="250dp" 
+        	android:layout_height="wrap_content" 
+        	android:layout_gravity="center"/>
+       	
+       	<Button android:layout_width="250dp"
+       		android:layout_height="wrap_content"
+       		android:text="About" 
+       		android:layout_gravity="center" 
+       		android:textSize="20sp" 
+       		android:id="@+id/aboutButton"/>
+        	   
+	</LinearLayout>
