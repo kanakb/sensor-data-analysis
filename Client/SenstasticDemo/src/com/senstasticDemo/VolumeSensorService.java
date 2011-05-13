@@ -18,7 +18,7 @@ public class VolumeSensorService extends SensorService
 	
 	protected int getInterval()
 	{
-		return 15;
+		return 300;
 	}
 	
 	protected void sense()
