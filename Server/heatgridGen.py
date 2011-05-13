@@ -53,8 +53,8 @@ class HeatgridGenerator(webapp.RequestHandler):
                 minLongitude = float(elementTree.findtext('minLongitude'))
                 
             # figure out the spacing
-            deltaLon = (maxLongitude - minLongitude) / yDim
-            deltaLat = (maxLatitude - minLatitude) / xDim
+            deltaLon = (maxLongitude - minLongitude) / xDim
+            deltaLat = (maxLatitude - minLatitude) / yDim
             
             # initialize data structure
             weightDict = {}
@@ -75,8 +75,8 @@ class HeatgridGenerator(webapp.RequestHandler):
                     data = float(elementTree.findtext('data'))
                     lat = float(elementTree.findtext('latitude'))
                     lon = float(elementTree.findtext('longitude'))
-                    xIndex = int((lat - minLatitude) / deltaLat)
-                    yIndex = int((lat - maxLongitude) / deltaLon)
+                    yIndex = int((lat - minLatitude) / deltaLat)
+                    xIndex = int((lat - maxLongitude) / deltaLon)
                     if xIndex >= 0 and yIndex >= 0 and xIndex < xDim and yIndex < yDim:
                         weightDict[str(xIndex * yDim + yIndex)] += data
                         numDict[str(xIndex * yDim + yIndex)] += 1
@@ -98,18 +98,18 @@ class HeatgridGenerator(webapp.RequestHandler):
             
             # add number of rows and columns
             numRows = Element('numRows')
-            numRows.text = str(xDim)
+            numRows.text = str(yDim)
             e.append(numRows)
             numColumns = Element('numColumns')
-            numColumns.text = str(yDim)
+            numColumns.text = str(xDim)
             e.append(numColumns)
             
             # add row/column width/height
             rowWidth = Element('rowWidth')
-            rowWidth.text = str(deltaLat)
+            rowWidth.text = str(deltaLon)
             e.append(rowWidth)
             columnHeight = Element('columnHeight')
-            columnHeight.text = str(deltaLon)
+            columnHeight.text = str(deltaLat)
             e.append(columnHeight)
             
             # add origin latitude/longitude

@@ -13,8 +13,8 @@ class AggregateDataExtracter(webapp.RequestHandler):
                     <form action="/heatgridGen" method="post">
                         Measurement Data: <br />
                         <textarea rows="40" cols="100" name="xml"></textarea><br />
-                        Rows: <input type="text" name="xDim" /><br />
-                        Columns: <input type="text" name="yDim" /><br />
+                        Rows: <input type="text" name="yDim" /><br />
+                        Columns: <input type="text" name="xDim" /><br />
                         <input type="submit" value="Submit" />
                     </form>
                 </body>
