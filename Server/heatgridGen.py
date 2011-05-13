@@ -85,12 +85,12 @@ class HeatgridGenerator(webapp.RequestHandler):
             for i in range(xDim * yDim):
                 if numDict[str(i)] > 0:
                     weightDict[str(i)] /= numDict[str(i)]
-                    if weightDict[str(i)] < minWeight or minWeight == 0.0:
+                    if weightDict[str(i)] < minWeight or minWeight < 0.0001:
                         minWeight = weightDict[str(i)]
-                        
+            
             # normalize weights to 1.0
             for i in range(xDim * yDim):
-                if numDict[str(i)] > 0:
+                if numDict[str(i)] > 0 && minWeight >= 0.0:
                     weightDict[str(i)] /= minWeight
                     
             # set up XML elements
