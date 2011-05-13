@@ -116,8 +116,6 @@ public class Measurement
 		{
 			File[] files = FileUtility.getDirectoryFiles(context, MEASUREMENTS_DIRECTORY_NAME);
 			
-			Logger.d("Will send out saved measurements: " + files.length);
-			
 			for (File file : files)
 			{
 				String xmlString = FileUtility.readFile(file);
