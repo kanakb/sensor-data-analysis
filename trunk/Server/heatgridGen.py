@@ -80,6 +80,7 @@ class HeatgridGenerator(webapp.RequestHandler):
                     if xIndex >= 0 and yIndex >= 0 and xIndex < xDim and yIndex < yDim:
                         weightDict[str(xIndex * yDim + yIndex)] += data
                         numDict[str(xIndex * yDim + yIndex)] += 1
+                        
             # next, take the average and keep the minimum to normalize to 1.0
             minWeight = 0.0
             for i in range(xDim * yDim):
@@ -90,7 +91,7 @@ class HeatgridGenerator(webapp.RequestHandler):
             
             # normalize weights to 1.0
             for i in range(xDim * yDim):
-                if numDict[str(i)] > 0 && minWeight >= 0.0:
+                if numDict[str(i)] > 0 and minWeight >= 0.0:
                     weightDict[str(i)] /= minWeight
                     
             # set up XML elements
