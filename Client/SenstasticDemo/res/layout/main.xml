@@ -3,7 +3,8 @@
 	    android:orientation="vertical"
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent"
-	    android:background="@drawable/background">
+	    android:background="@drawable/background"
+	    android:theme="@android:style/Theme.Black.NoTitleBar">
 
 	    <TextView
 	    	android:layout_height="wrap_content"
@@ -15,7 +16,8 @@
 	    	android:textStyle="bold"
 	    	android:padding="20dp"/>
 
-	    <Button android:text="View Aggregate Map"
+	    <Button 
+	    	android:text="View Aggregate Map"
    	    	android:id="@+id/aggregateMapButton"
         	android:textSize="20sp"
         	android:layout_width="250dp" 
