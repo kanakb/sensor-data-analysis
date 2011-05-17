@@ -1,0 +1,4 @@
+cron:
+- description: refresh of desired heatgrid
+  url: /refreshHeatgrid
+  schedule: every 5 hours
