@@ -110,9 +110,9 @@ class GenericDataRetriever(webapp.RequestHandler):
             results = Measurement.bounding_box_fetch(
                         q,
                         geotypes.Box(elemDict['maxLatitude'], elemDict['maxLongitude'], elemDict['minLatitude'], elemDict['minLongitude']),
-                        max_results=500) # 500 is arbitrary; we can play with this number
+                        max_results=2000) # 2000 is arbitrary; we can play with this number
         else:
-            results = q.fetch(500)
+            results = q.fetch(2000)
             
         # iterate through results if they exist and get their XML representation
         allResults = ''

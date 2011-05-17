@@ -12,6 +12,12 @@ handlers:
   script: heatgridGen.py
 - url: /heatgrid.xml
   script: heatgridGen.py
+- url: /refreshHeatgrid
+  script: refreshHeatgrid.py
+- url: /cleardata
+  script: test_tools/cleardata.py
+- url: /createPoints
+  script: test_tools/createPoints.py
 - url: /insert
   script: test_tools/insert.py
 - url: /extract
@@ -20,3 +26,6 @@ handlers:
   script: test_tools/extractAggregate.py
 - url: /.*
   script: error.py
+
+builtins:
+- datastore_admin: on

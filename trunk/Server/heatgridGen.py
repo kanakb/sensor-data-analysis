@@ -48,13 +48,13 @@ class HeatgridGenerator(webapp.RequestHandler):
             for m in measInput:
                 elementTree = ElementTree(m)
                 maxLatitude = float(elementTree.findtext('maxLatitude'))
-                maxLongtiude = float(elementTree.findtext('maxLongitude'))
+                maxLongitude = float(elementTree.findtext('maxLongitude'))
                 minLatitude = float(elementTree.findtext('minLatitude'))
                 minLongitude = float(elementTree.findtext('minLongitude'))
                 
             # figure out the spacing
-            deltaLon = (maxLongitude - minLongitude) / xDim
-            deltaLat = (maxLatitude - minLatitude) / yDim
+            deltaLon = (maxLongitude - minLongitude) / float(xDim)
+            deltaLat = (maxLatitude - minLatitude) / float(yDim)
             
             # initialize data structure
             weightDict = {}
@@ -76,7 +76,7 @@ class HeatgridGenerator(webapp.RequestHandler):
                     lat = float(elementTree.findtext('latitude'))
                     lon = float(elementTree.findtext('longitude'))
                     yIndex = int((lat - minLatitude) / deltaLat)
-                    xIndex = int((lat - maxLongitude) / deltaLon)
+                    xIndex = int((lon - minLongitude) / deltaLon)
                     if xIndex >= 0 and yIndex >= 0 and xIndex < xDim and yIndex < yDim:
                         weightDict[str(xIndex * yDim + yIndex)] += data
                         numDict[str(xIndex * yDim + yIndex)] += 1
@@ -91,7 +91,7 @@ class HeatgridGenerator(webapp.RequestHandler):
             
             # normalize weights to 1.0
             for i in range(xDim * yDim):
-                if numDict[str(i)] > 0 and minWeight >= 0.0:
+                if numDict[str(i)] > 0 and minWeight > 0.0:
                     weightDict[str(i)] /= minWeight
                     
             # set up XML elements
