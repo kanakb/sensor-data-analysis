@@ -117,7 +117,7 @@ class HeatgridGenerator(webapp.RequestHandler):
             originLatitude = Element('originLatitude')
             originLatitude.text = str(minLatitude)
             e.append(originLatitude)
-            originLongitude = Element('originLongtiude')
+            originLongitude = Element('originLongitude')
             originLongitude.text = str(minLongitude)
             e.append(originLongitude)
             
@@ -150,7 +150,8 @@ class HeatgridData(webapp.RequestHandler):
 
 application = webapp.WSGIApplication(
                                      [('/heatgridGen', HeatgridGenerator),
-                                      ('/heatgrid.xml', HeatgridData)],
+                                      ('/heatgrid.xml', HeatgridData),
+                                      ('/s/heatgrid.xml', HeatgridData)],
                                      debug=True)
 
 def main():

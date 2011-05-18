@@ -12,6 +12,8 @@ handlers:
   script: heatgridGen.py
 - url: /heatgrid.xml
   script: heatgridGen.py
+- url: /s/heatgrid.xml
+  script: heatgridGen.py
 - url: /refreshHeatgrid
   script: refreshHeatgrid.py
 - url: /cleardata
@@ -24,6 +26,8 @@ handlers:
   script: test_tools/extract.py
 - url: /extractAggregate
   script: test_tools/extractAggregate.py
+- url: /s
+  static_dir: static
 - url: /.*
   script: error.py
 
