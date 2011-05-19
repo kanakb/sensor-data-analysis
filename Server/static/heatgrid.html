@@ -30,8 +30,8 @@
                         var hg = {
                             numRows: $(xml).find('numRows').text(),
                             numColumns: $(xml).find('numColumns').text(),
-                            rowWidth: $(xml).find('rowWidth').text(),
-                            columnHeight: $(xml).find('columnHeight').text(),
+                            rowHeight: $(xml).find('rowHeight').text(),
+                            columnWidth: $(xml).find('columnWidth').text(),
                             originLatitude: $(xml).find('originLatitude').text(),
                             originLongitude: $(xml).find('originLongitude').text(),
                             weights: new Array(),
@@ -55,8 +55,8 @@
                 // Enforce types.
                 var numRows = parseInt(hg.numRows);
                 var numColumns = parseInt(hg.numColumns);
-                var rowWidth = parseFloat(hg.rowWidth);
-                var columnHeight = parseFloat(hg.columnHeight);
+                var rowHeight = parseFloat(hg.rowHeight);
+                var columnWidth = parseFloat(hg.columnWidth);
                 var originLatitude = parseFloat(hg.originLatitude);
                 var originLongitude = parseFloat(hg.originLongitude);
 
@@ -97,8 +97,8 @@
                 for (var c = 0; c < numColumns; c++) {
                     for (var r = 0; r < numRows; r++) {
                         var latLngBounds = new google.maps.LatLngBounds(
-                            new google.maps.LatLng(originLatitude - rowWidth*r, originLongitude + columnHeight*c),
-                            new google.maps.LatLng(originLatitude - rowWidth*(r+1), originLongitude + columnHeight*(c+1))
+                            new google.maps.LatLng(originLatitude - rowHeight*r, originLongitude + columnWidth*c),
+                            new google.maps.LatLng(originLatitude - rowHeight*(r+1), originLongitude + columnWidth*(c+1))
                         );
 
                         var rectangle = new google.maps.Rectangle({
