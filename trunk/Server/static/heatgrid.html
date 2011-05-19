@@ -94,11 +94,11 @@
 
                 // Draw the heatgrid cells as rectangle overlays.
                 var i = 0;
-                for (var c = 0; c < numColumns; c++) {
-                    for (var r = 0; r < numRows; r++) {
+                for (var r = 0; r < numRows; r++) {
+                    for (var c = 0; c < numColumns; c++) {
                         var latLngBounds = new google.maps.LatLngBounds(
-                            new google.maps.LatLng(originLatitude - rowHeight*r, originLongitude + columnWidth*c),
-                            new google.maps.LatLng(originLatitude - rowHeight*(r+1), originLongitude + columnWidth*(c+1))
+                            new google.maps.LatLng(originLatitude + rowHeight*r, originLongitude + columnWidth*c),
+                            new google.maps.LatLng(originLatitude + rowHeight*(r+1), originLongitude + columnWidth*(c+1))
                         );
 
                         var rectangle = new google.maps.Rectangle({
