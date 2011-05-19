@@ -78,8 +78,8 @@ class HeatgridGenerator(webapp.RequestHandler):
                     yIndex = int((lat - minLatitude) / deltaLat)
                     xIndex = int((lon - minLongitude) / deltaLon)
                     if xIndex >= 0 and yIndex >= 0 and xIndex < xDim and yIndex < yDim:
-                        weightDict[str(xIndex * yDim + yIndex)] += data
-                        numDict[str(xIndex * yDim + yIndex)] += 1
+                        weightDict[str(yIndex * xDim + xIndex)] += data
+                        numDict[str(yIndex * xDim + xIndex)] += 1
                         
             # next, take the average and keep the minimum to normalize to 1.0
             minWeight = 0.0
@@ -106,12 +106,12 @@ class HeatgridGenerator(webapp.RequestHandler):
             e.append(numColumns)
             
             # add row/column width/height
-            rowWidth = Element('rowWidth')
-            rowWidth.text = str(deltaLon)
-            e.append(rowWidth)
-            columnHeight = Element('columnHeight')
-            columnHeight.text = str(deltaLat)
-            e.append(columnHeight)
+            rowHeight = Element('rowHeight')
+            rowHeight.text = str(deltaLat)
+            e.append(rowHeight)
+            columnWidth = Element('columnWidth')
+            columnWidth.text = str(deltaLon)
+            e.append(columnWidth)
             
             # add origin latitude/longitude
             originLatitude = Element('originLatitude')
