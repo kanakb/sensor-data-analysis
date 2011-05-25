@@ -45,12 +45,16 @@ class HeatgridGenerator(webapp.RequestHandler):
             maxLongitude = 0.0
             minLatitude = 0.0
             minLongitude = 0.0
+            deviceId = '1'
             for m in measInput:
                 elementTree = ElementTree(m)
                 maxLatitude = float(elementTree.findtext('maxLatitude'))
                 maxLongitude = float(elementTree.findtext('maxLongitude'))
                 minLatitude = float(elementTree.findtext('minLatitude'))
                 minLongitude = float(elementTree.findtext('minLongitude'))
+                subelt = elementTree.find('deviceIds')
+                if subelt != None and subelt.findtext('deviceId') != None:
+                    deviceId = subelt.findtext('deviceId')
                 
             # figure out the spacing
             deltaLon = (maxLongitude - minLongitude) / float(xDim)
@@ -130,7 +134,7 @@ class HeatgridGenerator(webapp.RequestHandler):
             e.append(weights)
             
             # save results to a file
-            key = XMLFile(xml=tostring(e), key_name=('1'))
+            key = XMLFile(xml=tostring(e), key_name=(deviceId))
             key.save()
             
             self.response.out.write("SUCCESS")
@@ -141,8 +145,11 @@ class HeatgridGenerator(webapp.RequestHandler):
 class HeatgridData(webapp.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/xml'
+        id = '1'
+        if self.request.get('id'):
+            id = self.request.get('id')
         # grab file contents from the datastore cache, and display them
-        myFile = XMLFile.get_by_key_name('1')
+        myFile = XMLFile.get_by_key_name(id)
         if myFile != None:
             xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
             xml += myFile.xml

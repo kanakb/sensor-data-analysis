@@ -26,13 +26,16 @@ class PointCreator(webapp.RequestHandler):
             maxLon = float(self.request.get('maxLon'))
             deltaLon = maxLon - minLon
             
-            # Generate 2000 data points
-            for i in range(2000):
+            # Generate 500 data points
+            for i in range(500):
                 # get an arbitrary location in the box
                 latitude = random.random() * deltaLat + minLat
                 longitude = random.random() * deltaLon + minLon
                 m = Measurement(location=db.GeoPt(latitude, longitude))
-                m.deviceId = senselib.toHash('test')
+                if self.request.get('id'):
+                    m.deviceId = self.request.get('id')
+                else:
+                    m.deviceId = senselib.toHash('test')
                 m.deviceKind = 'Test Device'
                 m.time = datetime.datetime.now()
                 m.sensorKind = 'volume'
@@ -44,7 +47,7 @@ class PointCreator(webapp.RequestHandler):
             
             self.response.out.write('SUCCESS')
         except:
-            self.response.out.write('FAILURE')
+            pass
             
 application = webapp.WSGIApplication(
                                      [('/createPoints', PointCreator)],
