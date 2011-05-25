@@ -5,29 +5,25 @@ import android.util.Log;
 public class Logger 
 {
 	public static String LOG_TAG = "Senstastic";
+	public static String MESSAGE_SEPARATOR = "\n";
+	public static int MAX_MESSAGES = 100;
 	
-	public static void v(String message)
+	private static String log = "";
+	
+	public static String getLog()
 	{
-		Log.v(LOG_TAG, message);
+		return log;
 	}
 	
 	public static void d(String message)
 	{
+		log += message + MESSAGE_SEPARATOR;
 		Log.d(LOG_TAG, message);
-	}
-	
-	public static void i(String message)
-	{
-		Log.i(LOG_TAG, message);
-	}
-	
-	public static void w(String message)
-	{
-		Log.w(LOG_TAG, message);
 	}
 	
 	public static void e(String message)
 	{
+		log += message + MESSAGE_SEPARATOR;
 		Log.e(LOG_TAG, message);
 	}
 }
