@@ -10,7 +10,7 @@ import android.content.Intent;
 public class Senstastic 
 {
 	public static String endpointURL;
-	
+
 	public static void init(String endpointURL)
 	{
 		Senstastic.endpointURL = endpointURL;
