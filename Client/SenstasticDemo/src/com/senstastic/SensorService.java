@@ -102,7 +102,8 @@ public class SensorService extends Service implements LocationReceiver
 		}
 		
 		// If location acquisition succeeded, create the new measurement.
-		new Measurement(this, getSensorKind(), data, location.getLatitude(), location.getLongitude());
+		Measurement measurement = new Measurement(this, getSensorKind(), data, location.getLatitude(), location.getLongitude());
+		measurement.sendWithSaveFallback();
 		
 		finish();
 	}
@@ -110,7 +111,7 @@ public class SensorService extends Service implements LocationReceiver
 	private void finish()
 	{
 	    // Before we stop this service, use it send out any saved measurements from any sensors if we happen to have wifi.
-	    Measurement.attemptToSendSavedMeasurements(this);
+	    Measurement.sendSavedMeasurements(this);
 		
 	    Logger.d("Sensing finished.");
 	    

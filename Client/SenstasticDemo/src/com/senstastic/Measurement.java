@@ -12,11 +12,29 @@ import android.content.Context;
 
 public class Measurement 
 {	
+	/*
+	 * This is the name of the directory created in the application storage directory
+	 * that stores all measurements that have not been sent to the server yet.
+	 */
 	public static String MEASUREMENTS_DIRECTORY_NAME = "measurements";
+	
+	/*
+	 * This is the HTTP body string that the server returns when it receives and processes a measurement correctly. 
+	 */
 	public static String SUCCESS_HTTP_RESPONSE_BODY = "SUCCESS";
 	
+	/*
+	 * This is the application context in which the measurement object was created.
+	 * It is used to fetch information about the device that the measurement object needs in its methods
+	 * (e.g. the device id, wifi availability).
+	 * This is not sent to the server nor saved to disk with the measurement.
+	 */
 	private Context context;
 	
+	/*
+	 * These are the core measurement data fields.
+	 * These are sent to the server or saved to disk with the measurement.
+	 */
 	private String deviceId;
 	private String deviceKind;
 	private String sensorKind;
@@ -25,6 +43,11 @@ public class Measurement
 	private double longitude;
 	private Object data;
 	
+	/*
+	 * This constructor creates a measurement object.
+	 * Then, the caller should decide what to do with this measurement.
+	 * Usually, the caller should call sendWithSaveFallback.
+	 */
 	public Measurement(Context context, String sensorKind, Object data, double latitude, double longitude)
 	{
 		this.context = context;
@@ -36,10 +59,14 @@ public class Measurement
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.data = data;
-		
-		sendOrSave();
 	}
 	
+	// TODO: Ask Kanak to support measurement tag.
+	/*
+	 * This method encodes the measurement as an XML string.
+	 * This XML string may be saved in a file for later sending, or
+	 * this xml string may be sent as POST data to the server.
+	 */
 	private String getXmlString()
 	{
 		XMLStringGenerator gen = new XMLStringGenerator();
@@ -56,22 +83,41 @@ public class Measurement
 		return gen.end();
 	}
 	
+	/*
+	 * This method gets the file name for the measurement.
+	 * If the measurement is saved in the measurements directory for later sending,
+	 * it is saved under this file name.
+	 */
 	private String getFileName()
 	{
 		return sensorKind + "_" + time + ".xml";
 	}
 	
-	private void sendOrSave()
+	/*
+	 * This method attempts to send the measurement to the server,
+	 * respecting the measurement sending policy.
+	 * It saves the measurement to disk if the measurement sending policy is not met
+	 * or if measurement sending fails.
+	 */
+	public void sendWithSaveFallback()
 	{
-		if (!ConnectionInfo.isWifiAvailable(context) || !send())
+		if (!send())
 			save();
-	}	
-	
-	private boolean send()
-	{
-		return sendXMLString(getXmlString());
 	}
 	
+	/*
+	 * This method attempts to send the measurement to the server,
+	 * respecting the measurement sending policy.
+	 */
+	private boolean send()
+	{
+		return shouldSendMeasurements(context) && sendXMLString(getXmlString());
+	}
+	
+	/*
+	 * This method saves the measurement to the measurements directory as an XML file .
+	 * It will be sent to the server at a later time, whenever attemptToSendSavedMeasurements is called.
+	 */
 	private void save()
 	{
 		synchronized (FileUtility.class) 
@@ -81,6 +127,11 @@ public class Measurement
 		}
 	}
 	
+	// TODO: Make this non-blocking.
+	/*
+	 * This method sends an XML string to the server.
+	 * It places the XML string in a POST data variable called "xml".
+	 */
 	private static boolean sendXMLString(String xml)
 	{
 	    try 
@@ -101,17 +152,26 @@ public class Measurement
 	    	return false;
 	    }
 	}
-	
-	// Dealing with saved measurements.
-	
-	public static void attemptToSendSavedMeasurements(Context context)
+
+	/*
+	 * This method implements the measurement sending policy.
+	 * The current policy is measurements should be sent
+	 * when a wifi connection is available.
+	 */
+	private static boolean shouldSendMeasurements(Context context)
 	{
-		if (ConnectionInfo.isWifiAvailable(context))
-			sendSavedMeasurements(context);
+		return ConnectionInfo.isWifiAvailable(context);
 	}
 	
-	private static void sendSavedMeasurements(Context context)
+	/*
+	 * This method attempts to send all saved measurements to the server,
+	 * while respecting the measurment sending policy.
+	 */
+	public static void sendSavedMeasurements(Context context)
 	{
+		if (!shouldSendMeasurements(context))
+			return;
+		
 		synchronized (FileUtility.class)
 		{
 			File[] files = FileUtility.getDirectoryFiles(context, MEASUREMENTS_DIRECTORY_NAME);
@@ -123,7 +183,7 @@ public class Measurement
 				// Try to send the measurement and clean up its file if it is sent out correctly.
 				if (sendXMLString(xmlString))
 					FileUtility.deleteFile(file);
-				// If sending one measurement failed, don't try to send more.
+				// If sending one measurement failed, don't try to send any more measurements.
 				else
 					return;
 			}
