@@ -3,32 +3,37 @@ package com.senstasticDemo;
 import com.senstasticDemo.R;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.widget.Button;
 
-public class MapActivity extends Activity
+public class MapActivity extends Activity implements OnClickListener
 {
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main2);
+        setContentView(R.layout.map_view);
 
-        WebView webview = (WebView)findViewById(R.id.webview);
-        webview.getSettings().setJavaScriptEnabled(true);
-        webview.loadUrl("http://dudeitworks.com/heatgrid/heatgrid.html?dataUrl=data.xml&zoom=15&colors=00FF00,FFCC00,FF0000");
+        // Get the URL passed in through the intent.
+        Bundle extras = getIntent().getExtras(); 
+        if(extras == null)
+        	return;        
+        String url = extras.getString("url");
+
+        // Set up the web view.
+        WebView webView = (WebView)findViewById(R.id.mapViewWebView);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.loadUrl(url);
         
-        Button next = (Button) findViewById(R.id.Button02);
-        next.setOnClickListener(new View.OnClickListener() 
-        {
-            public void onClick(View view) 
-            {
-                Intent intent = new Intent();
-                setResult(RESULT_OK, intent);
-                finish();
-            }
-        });
+        // Set up the back button.
+        Button next = (Button)findViewById(R.id.mapViewBackButton);
+        next.setOnClickListener(this);
+    }
+    
+    public void onClick(View view) 
+    {
+        finish();
     }
 }

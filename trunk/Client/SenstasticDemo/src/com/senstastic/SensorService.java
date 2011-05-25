@@ -112,8 +112,6 @@ public class SensorService extends Service implements LocationReceiver
 	{
 	    // Before we stop this service, use it send out any saved measurements from any sensors if we happen to have wifi.
 	    Measurement.sendSavedMeasurements(this);
-		
-	    Logger.d("Sensing finished.");
 	    
 		// Release the wake lock.
 		releaseWakeLock();
@@ -142,7 +140,7 @@ public class SensorService extends Service implements LocationReceiver
 		return "Sensor";
 	}
 	
-	protected int getInterval()
+	protected int getIntervalInSeconds()
 	{
 		return 300;
 	}

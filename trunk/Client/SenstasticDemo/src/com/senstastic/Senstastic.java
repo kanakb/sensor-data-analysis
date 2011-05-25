@@ -23,7 +23,7 @@ public class Senstastic
 		try 
 		{
 			SensorService sensorServiceInstance = sensorServiceClass.newInstance();
-			interval = sensorServiceInstance.getInterval();
+			interval = sensorServiceInstance.getIntervalInSeconds();
 		}
 		catch (Exception e)
 		{

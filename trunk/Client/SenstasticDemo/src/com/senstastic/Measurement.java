@@ -122,8 +122,11 @@ public class Measurement
 	{
 		synchronized (FileUtility.class) 
 		{
-			FileUtility.writeFile(context, MEASUREMENTS_DIRECTORY_NAME, getFileName(), getXmlString());	
-			Logger.d(FileUtility.readFile(context, MEASUREMENTS_DIRECTORY_NAME, getFileName()));
+			String fileName = getFileName();
+			String xmlString = getXmlString();
+			
+			FileUtility.writeFile(context, MEASUREMENTS_DIRECTORY_NAME, fileName, xmlString);
+			Logger.d("Measurement written to file " + fileName + ": \n" + xmlString);
 		}
 	}
 	
@@ -136,12 +139,12 @@ public class Measurement
 	{
 	    try 
 	    {
-	    	// Build the post data.
+	    	// Build the POST data.
 	        List<NameValuePair> postDataNameValuePairs = new ArrayList<NameValuePair>(1);
 	        postDataNameValuePairs.add(new BasicNameValuePair("xml", xml));
 
-	        // Execute the http request.
-	        Logger.d("HTTP request:" + xml);
+	        // Execute the HTTP request.
+	        Logger.d("Sending HTTP POST data to server: \n" + xml);
 	        String responseBody = HttpUtility.executeHttpRequest(Senstastic.endpointURL, postDataNameValuePairs);
 	        Logger.d("HTTP response body: " + responseBody);
 	        return responseBody.equals(SUCCESS_HTTP_RESPONSE_BODY);
@@ -173,8 +176,11 @@ public class Measurement
 			return;
 		
 		synchronized (FileUtility.class)
-		{
+		{		
 			File[] files = FileUtility.getDirectoryFiles(context, MEASUREMENTS_DIRECTORY_NAME);
+			
+			if (files == null)
+				return;
 			
 			for (File file : files)
 			{

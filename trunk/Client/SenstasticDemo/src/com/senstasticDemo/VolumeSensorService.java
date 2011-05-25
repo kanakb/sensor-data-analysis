@@ -13,20 +13,18 @@ public class VolumeSensorService extends SensorService
 	
 	protected String getSensorKind()
 	{
-		return "MySensor";
+		return "volume";
 	}
 	
-	protected int getInterval()
+	protected int getIntervalInSeconds()
 	{
-		return 300;
+		return 10;
 	}
 	
 	protected void sense()
 	{
 		try
 		{
-			Logger.d("Sensing started");
-			
 			// Set the recording length.
 			double recordLengthInSecs = 5.0;
 			
@@ -63,8 +61,6 @@ public class VolumeSensorService extends SensorService
 	        
 	        // Stop recording.
 	        audioRecorder.stop();
-	        
-	        Logger.d("max: " + max);
 	        
 	        // Finish sensing and create a measurement with the maximum volume data, which will eventually be pushed to the server by the Senstastic engine.
 			finishSensing(max);

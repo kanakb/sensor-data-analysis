@@ -26,7 +26,6 @@ public class DeviceInfo
 	
 	public static String getDeviceKind()
 	{
-		// TODO: Implement;
-		return "DeviceKind";
+		return android.os.Build.MODEL;
 	}
 }
