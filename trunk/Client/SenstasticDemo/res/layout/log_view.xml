@@ -5,12 +5,22 @@
     android:layout_height="fill_parent"
     android:theme="@android:style/Theme.Black.NoTitleBar">  
     
+    <TextView
+	    android:text="Activity Log" 
+	    android:textSize="30sp"
+	    android:textColor="#FFFFFF" 
+	    android:textStyle="bold"
+	    android:padding="20dp"
+	   	android:layout_height="wrap_content"
+	    android:layout_width="fill_parent" />
+    
 	<TextView
 		android:id="@+id/logViewTextView"
 	    android:text="No log messages." 
 	    android:textSize="10sp"
 	    android:textColor="#FFFFFF" 
 	    android:scrollbars = "vertical"
+	    android:padding="5dp"
     	android:layout_width="fill_parent"
     	android:layout_height="fill_parent"
     	android:layout_weight="1"/>
@@ -19,6 +29,7 @@
    		android:id="@+id/logViewBackButton"
    		android:text="Back to Menu"
    		android:textSize="20sp"
+   		android:padding="5dp"
    		android:layout_width="fill_parent" 
    		android:layout_height="wrap_content"
    		android:layout_gravity="center"/>
