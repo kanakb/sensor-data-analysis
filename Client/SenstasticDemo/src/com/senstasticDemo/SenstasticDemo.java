@@ -1,5 +1,6 @@
 package com.senstasticDemo;
 
+import com.senstastic.DeviceInfo;
 import com.senstastic.Senstastic;
 
 import android.app.Activity;
@@ -46,12 +47,13 @@ public class SenstasticDemo extends Activity implements OnClickListener
     	if (view == aggregateMapButton)
     	{
     		intent.setClass(this, MapActivity.class);
+    		////intent.putExtra("url", "http://sensor-analysis.appspot.com/s/heatgrid.html?dataUrl=heatgrid.xml&zoom=15&colors=00FF00,FFCC00,FF0000");
     		intent.putExtra("url", "http://dudeitworks.com/heatgrid/heatgrid.html?dataUrl=data.xml&zoom=15&colors=00FF00,FFCC00,FF0000");
     	}
     	else if (view == personalMapButton)
     	{
     		intent.setClass(this, MapActivity.class);
-    		intent.putExtra("url", "http://dudeitworks.com/heatgrid/heatgrid.html?dataUrl=data.xml&zoom=15&colors=000000,FFCC00,FF0000");
+    		intent.putExtra("url", "http://sensor-analysis.appspot.com/s/heatgrid.html?dataUrl=heatgrid.xml?id=" + DeviceInfo.getDeviceId(this) + "&zoom=15&colors=00FF00,FFCC00,FF0000");
     	}
     	else if (view == activityLogButton)
     	{
