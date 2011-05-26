@@ -14,7 +14,7 @@ public class FileUtility
 		{
 			File directory = getDirectory(context, directoryName);
 			if (!directory.exists() && !directory.mkdir())
-				throw new Exception();
+				throw new Exception("Could not write file!");
 			
 			File file = getFile(context, directoryName, fileName);
 			
@@ -24,7 +24,7 @@ public class FileUtility
 		}
 		catch(Exception e)
 		{
-			Logger.e("Could not write file!");
+			Logger.e(e.getMessage());
 			return;
 		}
 	}
@@ -57,7 +57,7 @@ public class FileUtility
 		}
 		catch(Exception e)
 		{
-			Logger.e("Could not read file!" + e.getMessage());
+			Logger.e(e.getMessage());
 			return null;
 		}
 	}
@@ -90,7 +90,7 @@ public class FileUtility
 		}
 		catch(Exception e)
 		{
-			Logger.e("Could not get directory's files!");
+			Logger.e(e.getMessage());
 			return null;
 		}
 	}

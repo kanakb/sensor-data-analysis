@@ -32,7 +32,7 @@ public class HttpUtility
 		}
 		catch(Exception e)
 		{
-			Logger.e("Error executing HTTP request!");
+			Logger.e(e.getMessage());
 			return null;
 		}
 	}
@@ -58,7 +58,7 @@ public class HttpUtility
 		}
 		catch(Exception e)
 		{
-			Logger.e("Error getting HTTP response body!");
+			Logger.e(e.getMessage());
 			return null;
 		}
 	}

@@ -19,9 +19,9 @@ public class AlarmReceiver extends BroadcastReceiver
 	          
         	context.startService(new Intent(context, sensorServiceClass));
         }
-        catch(ClassNotFoundException e)
+        catch(Exception e)
         {
-            Logger.e("Class not found!");
+            Logger.e(e.getMessage());
         }
 	}
 }

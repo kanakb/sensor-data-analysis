@@ -150,7 +150,7 @@ public class Measurement
 	    } 
 	    catch (Exception e)
 	    {
-	    	Logger.e("Error sending measurement!");
+	    	Logger.e(e.getMessage());
 	    }
 	}
 
