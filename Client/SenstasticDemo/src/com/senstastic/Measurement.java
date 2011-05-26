@@ -19,11 +19,6 @@ public class Measurement
 	public static String MEASUREMENTS_DIRECTORY_NAME = "measurements";
 	
 	/*
-	 * This is the HTTP body string that the server returns when it receives and processes a measurement correctly. 
-	 */
-	public static String SUCCESS_HTTP_RESPONSE_BODY = "SUCCESS";
-	
-	/*
 	 * This is the application context in which the measurement object was created.
 	 * It is used to fetch information about the device that the measurement object needs in its methods
 	 * (e.g. the device id, wifi availability).
@@ -96,22 +91,23 @@ public class Measurement
 	/*
 	 * This method attempts to send the measurement to the server,
 	 * respecting the measurement sending policy.
-	 * It saves the measurement to disk if the measurement sending policy is not met
-	 * or if measurement sending fails.
+	 * It saves the measurement to disk if the measurement sending policy requirements are currently not met.
 	 */
 	public void sendWithSaveFallback()
 	{
-		if (!send())
+		if (shouldSendMeasurements(context))
+			send();
+		else
 			save();
 	}
 	
 	/*
 	 * This method attempts to send the measurement to the server,
-	 * respecting the measurement sending policy.
+	 * It does not respect the measurement sending policy.
 	 */
-	private boolean send()
+	private void send()
 	{
-		return shouldSendMeasurements(context) && sendXMLString(getXmlString());
+		sendXMLString(getXmlString());
 	}
 	
 	/*
@@ -130,29 +126,31 @@ public class Measurement
 		}
 	}
 	
-	// TODO: Make this non-blocking.
 	/*
 	 * This method sends an XML string to the server.
 	 * It places the XML string in a POST data variable called "xml".
 	 */
-	private static boolean sendXMLString(String xml)
+	private static void sendXMLString(String xmlString)
 	{
+		/*
+		SendXMLStringTask sendXmlStringTask = new SendXMLStringTask();
+		sendXmlStringTask.execute(xmlString);
+		*/
+		
 	    try 
 	    {
 	    	// Build the POST data.
 	        List<NameValuePair> postDataNameValuePairs = new ArrayList<NameValuePair>(1);
-	        postDataNameValuePairs.add(new BasicNameValuePair("xml", xml));
+	        postDataNameValuePairs.add(new BasicNameValuePair("xml", xmlString));
 
 	        // Execute the HTTP request.
-	        Logger.d("Sending HTTP POST data to server: \n" + xml);
+	        Logger.d("Sending HTTP POST data to server: \n" + xmlString);
 	        String responseBody = HttpUtility.executeHttpRequest(Senstastic.endpointURL, postDataNameValuePairs);
 	        Logger.d("HTTP response body: " + responseBody);
-	        return responseBody.equals(SUCCESS_HTTP_RESPONSE_BODY);
 	    } 
 	    catch (Exception e)
 	    {
 	    	Logger.e("Error sending measurement!");
-	    	return false;
 	    }
 	}
 
@@ -172,6 +170,7 @@ public class Measurement
 	 */
 	public static void sendSavedMeasurements(Context context)
 	{
+		// Return quickly if the measurement sending policy dictates that we should not send measurements now.
 		if (!shouldSendMeasurements(context))
 			return;
 		
@@ -184,14 +183,18 @@ public class Measurement
 			
 			for (File file : files)
 			{
+				// If something changed (e.g. wifi disconnected), stop sending any more measurements.
+				if (!shouldSendMeasurements(context))
+					return;
+				
+				// Get the saved measurement's XML string.
 				String xmlString = FileUtility.readFile(file);
 				
-				// Try to send the measurement and clean up its file if it is sent out correctly.
-				if (sendXMLString(xmlString))
-					FileUtility.deleteFile(file);
-				// If sending one measurement failed, don't try to send any more measurements.
-				else
-					return;
+				// Send the saved measurement's XML string.
+				sendXMLString(xmlString);
+				
+				// Delete the saved measurement whether or not sending succeeded.
+				FileUtility.deleteFile(file);
 			}
 		}
 	}

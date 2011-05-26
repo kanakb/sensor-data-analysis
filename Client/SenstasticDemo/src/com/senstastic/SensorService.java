@@ -8,12 +8,31 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.IBinder;
+import android.os.Looper;
+import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 
 public class SensorService extends Service implements LocationReceiver
-{
+{			
+	private final class SensorHandler extends Handler
+	{
+	    public SensorHandler(Looper looper)
+	    {
+	        super(looper);
+	    }
+	    
+	    public void handleMessage(Message message) 
+	    {
+	    	launch();
+	    }
+	}
+	
+	// SensorService.
+	
 	private static final String WAKE_LOCK_TAG = "SensorService";
 	
 	private WakeLock wakeLock;
@@ -27,10 +46,18 @@ public class SensorService extends Service implements LocationReceiver
 	
 	public int onStartCommand(Intent intent, int flags, int startId) 
 	{	
-		acquireWakeLock();
-	    sense();
+		HandlerThread handlerThread = new HandlerThread(getSensorKind());
+		handlerThread.start();
+		SensorHandler sensorHandler = new SensorHandler(handlerThread.getLooper());
+		sensorHandler.sendEmptyMessage(0);
 	    
 	    return START_NOT_STICKY;
+	}
+	
+	public void launch()
+	{
+		acquireWakeLock();
+	    sense();
 	}
 	
 	private void acquireWakeLock()
@@ -62,7 +89,8 @@ public class SensorService extends Service implements LocationReceiver
 	protected void finishSensing(Object data, double latitude, double longitude)
 	{
 		// Create the new measurement with the passed in data and location.
-		new Measurement(this, getSensorKind(), data, latitude, longitude);
+		Measurement measurement = new Measurement(this, getSensorKind(), data, latitude, longitude);
+		measurement.sendWithSaveFallback();
 		
 		finish();
 	}

@@ -22,7 +22,7 @@ public class VolumeSensorService extends SensorService
 	}
 	
 	protected void sense()
-	{
+	{	
 		try
 		{
 			// Set the recording length.
@@ -61,7 +61,7 @@ public class VolumeSensorService extends SensorService
 	        
 	        // Stop recording.
 	        audioRecorder.stop();
-	        
+			
 	        // Finish sensing and create a measurement with the maximum volume data, which will eventually be pushed to the server by the Senstastic engine.
 			finishSensing(max);
 		}
