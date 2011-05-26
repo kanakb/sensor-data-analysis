@@ -25,7 +25,10 @@ public class NetworkLocationRequest extends Handler implements LocationRequest, 
 		
 		// Get the location manager.
 		locationManager = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
-		
+	}
+	
+	public void start()
+	{
 		// Request location updates from wifi or cell towers.
 		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0.0f, this);
 	}

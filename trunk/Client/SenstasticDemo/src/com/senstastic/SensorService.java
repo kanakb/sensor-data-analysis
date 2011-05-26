@@ -27,7 +27,7 @@ public class SensorService extends Service implements LocationReceiver
 	    
 	    public void handleMessage(Message message) 
 	    {
-	    	launch();
+	    	sense();
 	    }
 	}
 	
@@ -35,7 +35,9 @@ public class SensorService extends Service implements LocationReceiver
 	
 	private static final String WAKE_LOCK_TAG = "SensorService";
 	
-	private WakeLock wakeLock;
+	private volatile WakeLock wakeLock;
+	private HandlerThread handlerThread;
+	private Looper handlerThreadLooper;
 	private Object data;
 	private LocationRequest locationRequest;
 	
@@ -46,18 +48,21 @@ public class SensorService extends Service implements LocationReceiver
 	
 	public int onStartCommand(Intent intent, int flags, int startId) 
 	{	
-		HandlerThread handlerThread = new HandlerThread(getSensorKind());
+		// Acquire the wake lock immediately on the main thread. (The handler thread that is about to be created will release it.)
+		acquireWakeLock();
+		
+		// Run the methods of this service (except callbacks like onDestroy) in a handler thread.
+		handlerThread = new HandlerThread(getSensorKind());
 		handlerThread.start();
-		SensorHandler sensorHandler = new SensorHandler(handlerThread.getLooper());
+		
+		// getLooper() will block until the handler thread's looper is available.
+		handlerThreadLooper = handlerThread.getLooper();
+		
+		// Start sensing in the new thread by sending the thread's looper's handler a message.
+		SensorHandler sensorHandler = new SensorHandler(handlerThreadLooper);
 		sensorHandler.sendEmptyMessage(0);
 	    
 	    return START_NOT_STICKY;
-	}
-	
-	public void launch()
-	{
-		acquireWakeLock();
-	    sense();
 	}
 	
 	private void acquireWakeLock()
@@ -107,13 +112,14 @@ public class SensorService extends Service implements LocationReceiver
 		// Save the data until the location request finishes.
 		this.data = data;
 		
-		// Start the location request.
+		// Create and start the location request.
 		locationRequest = getLocationRequest();
+		locationRequest.start();
 	}
 	
 	/*
 	 * Call this function when you would like your sensor service to finish sensing without pushing anything out to the server.
-	 * For example, if your sensor service encounters and error and should not create and send a measurement, then call this function to end the service. 
+	 * For example, if your sensor service encounters an error and should not create and send a measurement, then call this function to end the service. 
 	 */
 	protected void finishSensing()
 	{
@@ -141,6 +147,9 @@ public class SensorService extends Service implements LocationReceiver
 	    // Before we stop this service, use it send out any saved measurements from any sensors if we happen to have wifi.
 	    Measurement.sendSavedMeasurements(this);
 	    
+	    // Stop the handler thread by stopping its looper.
+	    handlerThreadLooper.quit();
+	    
 		// Release the wake lock.
 		releaseWakeLock();
 		
@@ -150,10 +159,10 @@ public class SensorService extends Service implements LocationReceiver
 	
 	public void onDestroy()
 	{
-		if (locationRequest != null)
-			locationRequest.cancel();
+		// The onDestroy() callback will be called on the main thread, not the handler thread.
 		
-		releaseWakeLock();
+		// Delay destruction until the handler thread is done. When it is done, all clean-up has occurred.
+		while (handlerThread != null && handlerThread.isAlive());
 	}
 	
 	public IBinder onBind(Intent intent)
@@ -180,6 +189,6 @@ public class SensorService extends Service implements LocationReceiver
 	
 	protected void sense()
 	{
-		finishSensing(null);
+		finishSensing();
 	}
 }
