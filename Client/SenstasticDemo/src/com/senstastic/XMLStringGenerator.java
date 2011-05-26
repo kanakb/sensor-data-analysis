@@ -30,7 +30,7 @@ public class XMLStringGenerator
 		}
 		catch(Exception e)
 		{
-			error();
+			Logger.e(e.getMessage());
 		}
 	}
 	
@@ -42,7 +42,7 @@ public class XMLStringGenerator
 		}
 		catch(Exception e)
 		{
-			error();
+			Logger.e(e.getMessage());
 		}
 	}
 	
@@ -54,7 +54,7 @@ public class XMLStringGenerator
 		}
 		catch(Exception e)
 		{
-			error();
+			Logger.e(e.getMessage());
 		}
 	}	
 	
@@ -78,7 +78,7 @@ public class XMLStringGenerator
 		}
 		catch(Exception e)
 		{
-			error();
+			Logger.e(e.getMessage());
 		}
 	}
 	
@@ -92,13 +92,8 @@ public class XMLStringGenerator
 		}
 		catch(Exception e)
 		{
-			error();
+			Logger.e(e.getMessage());
 			return null;
 		}
-	}
-	
-	private void error()
-	{
-		Logger.e("Error generating xml string!");
 	}
 }
