@@ -18,7 +18,7 @@ public class VolumeSensorService extends SensorService
 	
 	protected int getIntervalInSeconds()
 	{
-		return 10;
+		return 15;
 	}
 	
 	protected void sense()
@@ -26,16 +26,36 @@ public class VolumeSensorService extends SensorService
 		try
 		{
 			// Set the recording length.
-			double recordLengthInSecs = 5.0;
+			double recordLengthInSeconds = 5.0;
+			double initializationTimeoutInSeconds = 5.0; 
+			double initializationPollIntervalInSeconds = 0.1; 
 			
 			// Initialize the audio recorder.
 			int sampleRateInHz = 44100;
 	        int sampleLengthInShorts = AudioRecord.getMinBufferSize(sampleRateInHz, AudioFormat.CHANNEL_CONFIGURATION_MONO, AudioFormat.ENCODING_PCM_16BIT);
 	        AudioRecord audioRecorder = new AudioRecord(MediaRecorder.AudioSource.MIC, sampleRateInHz, AudioFormat.CHANNEL_CONFIGURATION_MONO, AudioFormat.ENCODING_PCM_16BIT, sampleLengthInShorts);
 	        
+	        // Wait until the audio recorder has acquired the hardware resources and is initialized or timeout.
+			long initializationPollIntervalInMillis = (long)(initializationPollIntervalInSeconds * 1000);
+	        double initializationWaitTime = 0.0;
+	        while (true)
+	        {
+	        	// If the audio recorder is ready, stop waiting.
+	        	if (audioRecorder.getState() == AudioRecord.STATE_INITIALIZED)
+	        		break;
+
+	        	// Wait.
+	        	Thread.sleep(initializationPollIntervalInMillis);
+	        	
+	        	// Increment the wait time. If we've timed out, throw an exception.
+	        	initializationWaitTime += initializationPollIntervalInSeconds;
+	        	if (initializationWaitTime >= initializationTimeoutInSeconds)
+	        		throw new Exception("Could not acquire audio recording hardware resources in time!");
+	        }
+	        
 	        // Determine the number of samples to take. Each sample fills a buffer of length sampleLength.
 	        double sampleLengthInSec = (double)sampleLengthInShorts / (double)sampleRateInHz;
-	        int numSamples = (int)Math.ceil(recordLengthInSecs / sampleLengthInSec);
+	        int numSamples = (int)Math.ceil(recordLengthInSeconds / sampleLengthInSec);
 	        
             // Start recording.
 	        audioRecorder.startRecording();

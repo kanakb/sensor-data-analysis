@@ -18,6 +18,8 @@ import android.os.PowerManager.WakeLock;
 
 public class SensorService extends Service implements LocationReceiver
 {			
+	// SensorHandler.
+	
 	private final class SensorHandler extends Handler
 	{
 	    public SensorHandler(Looper looper)
