@@ -12,12 +12,18 @@ public class Logger
 	
 	public static void d(String message)
 	{
+		if (message == null)
+			return;
+		
 		appendMessage(message);
 		Log.d(LOG_TAG, message);
 	}
 	
 	public static void e(String message)
 	{
+		if (message == null)
+			return;
+		
 		appendMessage(message);
 		Log.e(LOG_TAG, message);
 	}
@@ -28,7 +34,7 @@ public class Logger
 	}
 	
 	private static synchronized void appendMessage(String message)
-	{
+	{	
 		log = message + MESSAGE_SEPARATOR + log;
 		
 		// Keep the log length in check.
