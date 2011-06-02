@@ -12,12 +12,18 @@ Checkout the SenstasticDemo Android project for a working example of a participa
 
   # When the user's device boots up, the Android OS broadcasts a BOOT_COMPLETED intent.
   # Your BootCompletedReceiver class, defined in BootCompletedReceiver.java, receives the intent in its onReceive method.
-  # In the onReceive method, you initialize Senstastic by providing it the URL to send all sensor measurements, called the endpoint URL. Then, you schedule which custom SensorService(s) you would like Senstastic to periodically execute.
+  # In the onReceive method, you start up the Senstastic framework by providing it the URL where you would like to send all your sensor measurements, called the endpoint URL. This is usually a script on the Senstastic server. Then, you schedule which custom SensorService(s) you would like Senstastic to periodically execute.
 
 {{{
-        String senstasticEndpointUrl = getString(R.string.senstastic_endpoint_url);
+public class BootCompletedReceiver extends BroadcastReceiver 
+{
+	public void onReceive(Context context, Intent intent)
+	{
+        String senstasticEndpointUrl = context.getString(R.string.senstastic_endpoint_url);
         Senstastic.init(senstasticEndpointUrl);
-        Senstastic.schedule(this, VolumeSensorService.class);
+        Senstastic.schedule(context, VolumeSensorService.class);
+	}
+}
 }}}
 
 ...
