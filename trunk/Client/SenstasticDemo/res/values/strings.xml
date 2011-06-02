@@ -8,4 +8,5 @@
     <string name="log_title">Activity Log</string>
     <string name="personal_map_title">Personal Map</string>
     <string name="aggregate_map_title">Aggregate Map</string>
+    <string name="senstastic_endpoint_url">http://sensor-analysis.appspot.com/import</string>
 </resources>
