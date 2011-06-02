@@ -10,9 +10,9 @@ Checkout the SenstasticDemo Android project for a working example of a participa
 
 = How Does the SenstasticDemo Work? =
 
-# When the user's device boots up, the Android OS broadcasts a BOOT_COMPLETED intent.
-# Your BootCompletedReceiver class, defined in BootCompletedReceiver.java, receives the intent in its onReceive method.
-# In the onReceive method, you initialize Senstastic by providing it the URL to send all sensor measurements, called the endpoint URL. Then, you schedule which custom SensorService(s) you would like Senstastic to periodically execute.
+  # When the user's device boots up, the Android OS broadcasts a BOOT_COMPLETED intent.
+  # Your BootCompletedReceiver class, defined in BootCompletedReceiver.java, receives the intent in its onReceive method.
+  # In the onReceive method, you initialize Senstastic by providing it the URL to send all sensor measurements, called the endpoint URL. Then, you schedule which custom SensorService(s) you would like Senstastic to periodically execute.
 
 {{{
         String senstasticEndpointUrl = getString(R.string.senstastic_endpoint_url);
@@ -26,4 +26,4 @@ Checkout the SenstasticDemo Android project for a working example of a participa
 
 Senstastic is a lightweight framework, and you are welcome to modify the framework itself to fit your needs. If you do plan to modify the framework, there are few important items we would to point out.
 
-# Blah...
+  # Blah...
