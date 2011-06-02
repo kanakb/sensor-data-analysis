@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, SenstasticDemo!</string>
     <string name="app_name">Noise Mapping</string>
+    <string name="about_content">By installing this app you agree to following conditions. This application periodically records an audio sample on your phone, determines the maximum volume of that audio sample, and sends the volume number to a server for statistical processing. Recorded audio data is never sent out of your phone. Only a single value representing the volume of an audio sample is sent out (e.g. volume = 100). You may view the data being sent out of your phone in the Activity Log. This app creates a random unique id number for your device when it is installed. This id number is used to fetch your personal noise map data and is tied to your volume measurements. This id number is generated specifically for use by this app and is not your Android device id. This id number could potentially be intercepted by someone, online or offline, and otherwise used to retrieve your personal volume data in the locations you have visited. However, the data or device id is not in any way tied to your name or other personally identifying information. Only if another individual can somehow link personally identifiable information like your name with your generated device id can they retrieve and associate data with you specifically. For example, this can occur if your phone is stolen. You agree to free the creators of this app of any and all liability for any and all kinds of damage potentially caused by using this app. This app is not intended to be invasive, annoying, or dangerous. It is intended to further the public good. If you do not agree with any of these terms or are unclear about them, you must cease using this app and uninstall it immediately. Otherwise, we welcome your statistical contributions!</string>
+    <string name="about_senstastic">This application is based off of the Senstastic participatory sensing framework. The Senstastic framework client side was written by Max Vujovic. The server side was written by Kanak Biscuitwala. The Senstastic framework was written under the guidance of Professor Giovanni Pau at UCLA in the Spring of 2011.</string>
+    <string name="back_to_menu">Back to Menu</string>
+    <string name="about_title">About</string>
+    <string name="log_title">Activity Log</string>
+    <string name="personal_map_title">Personal Map</string>
+    <string name="aggregate_map_title">Aggregate Map</string>
 </resources>

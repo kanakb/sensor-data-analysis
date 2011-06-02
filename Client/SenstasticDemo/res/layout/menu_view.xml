@@ -7,7 +7,7 @@
 	    android:theme="@android:style/Theme.Black.NoTitleBar">
 
 	   	<TextView
-		    android:text="Noise Mapping" 
+		    android:text="@string/app_name" 
 		    android:textSize="30sp"
 		    android:textColor="#FFFFFF" 
 		    android:textStyle="bold"
@@ -18,7 +18,7 @@
 
 	    <Button 
 	       	android:id="@+id/menuViewAggregateMapButton"
-	    	android:text="Aggregate Map"
+	    	android:text="@string/aggregate_map_title"
         	android:textSize="20sp"
         	android:layout_width="250dp" 
         	android:layout_height="wrap_content"
@@ -26,15 +26,15 @@
         	
        	<Button
        	   	android:id="@+id/menuViewPersonalMapButton" 
-       		android:text="Personal Map"
+       		android:text="@string/personal_map_title"
         	android:textSize="20sp"
         	android:layout_width="250dp" 
         	android:layout_height="wrap_content" 
         	android:layout_gravity="center"/>
        	
        	<Button
-       	   	android:id="@+id/menuViewActivityLogButton" 
-       		android:text="Activity Log"
+       	   	android:id="@+id/menuViewLogButton" 
+       		android:text="@string/log_title"
         	android:textSize="20sp"
         	android:layout_width="250dp" 
         	android:layout_height="wrap_content" 
@@ -42,7 +42,7 @@
        	
        	<Button
        	   	android:id="@+id/menuViewAboutButton" 
-       		android:text="About"
+       		android:text="@string/about_title"
         	android:textSize="20sp"
         	android:layout_width="250dp" 
         	android:layout_height="wrap_content" 

@@ -14,7 +14,7 @@ public class SenstasticDemo extends Activity implements OnClickListener
 {
 	private Button aggregateMapButton;
 	private Button personalMapButton;
-	private Button activityLogButton;
+	private Button logButton;
 	private Button aboutButton;
 	
     public void onCreate(Bundle savedInstanceState) 
@@ -29,8 +29,8 @@ public class SenstasticDemo extends Activity implements OnClickListener
         personalMapButton = (Button)findViewById(R.id.menuViewPersonalMapButton);
         personalMapButton.setOnClickListener(this);
         
-        activityLogButton = (Button)findViewById(R.id.menuViewActivityLogButton);
-        activityLogButton.setOnClickListener(this);
+        logButton = (Button)findViewById(R.id.menuViewLogButton);
+        logButton.setOnClickListener(this);
         
         aboutButton = (Button)findViewById(R.id.menuViewAboutButton);
         aboutButton.setOnClickListener(this);  
@@ -47,15 +47,14 @@ public class SenstasticDemo extends Activity implements OnClickListener
     	if (view == aggregateMapButton)
     	{
     		intent.setClass(this, MapActivity.class);
-    		////intent.putExtra("url", "http://sensor-analysis.appspot.com/s/heatgrid.html?dataUrl=heatgrid.xml&zoom=15&colors=00FF00,FFCC00,FF0000");
-    		intent.putExtra("url", "http://dudeitworks.com/heatgrid/heatgrid.html?dataUrl=data.xml&zoom=15&colors=00FF00,FFCC00,FF0000");
+    		intent.putExtra("url", "http://sensor-analysis.appspot.com/s/heatgrid.html?dataUrl=heatgrid.xml&zoom=15&colors=00FF00,FFCC00,FF0000");
     	}
     	else if (view == personalMapButton)
     	{
     		intent.setClass(this, MapActivity.class);
     		intent.putExtra("url", "http://sensor-analysis.appspot.com/s/heatgrid.html?dataUrl=heatgrid.xml?id=" + DeviceInfo.getDeviceId(this) + "&zoom=15&colors=00FF00,FFCC00,FF0000");
     	}
-    	else if (view == activityLogButton)
+    	else if (view == logButton)
     	{
     		intent.setClass(this, LogActivity.class);
     	}
