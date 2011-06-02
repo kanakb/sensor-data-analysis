@@ -2,7 +2,7 @@
 
 = Introduction =
 
-Senstastic is a lightweight framework for passive participatory sensing on Android devices. It allows you to schedule code to run at a specified interval on users' devices. That code will most likely use the device's built-in sensors in some way to generate measurement data. Senstastic can easily augment your measurement data with a geographic location (a latitude, longitude pair). Senstastic will save the measurement data to device until a WiFi connection becomes available. The device will then push the measurement data to the Senstastic server.
+Senstastic is a lightweight framework for passive participatory sensing on Android devices. It allows you to schedule code to run at a specified interval on users' devices. That code will most likely use the device's built-in sensors in some way to generate measurement data. Senstastic can easily augment your measurement data with a geographic location (a latitude, longitude pair), the time, and additional device information. Senstastic will save the measurement data to the device until a WiFi connection becomes available. The device will then push the measurement data to the Senstastic server.
 
 = Getting Started =
 
