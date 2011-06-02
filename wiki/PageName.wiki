@@ -63,7 +63,7 @@ This is a fully functioning SensorService! There are three methods you will usua
   # getIntervalInSeconds() should return how frequently your SensorService should run. This example will run every hour, or 3,600 seconds.
   # sense() is the entry point of your SensorService. When Senstastic tells your SensorService to run at your specified interval, execution begins here.
 
-## Important notes about sensing ##
+== Important notes about sensing ==
   
 Senstastic automatically runs your SensorService in its own thread, so any code you write in sense() will not block anything else in your application. When you are done sensing and have obtained your desired measurement, you must pass the measurement data to the Senstastic framework by calling finishSensing(data). This will attach metadata to your measurement, save it to persistent memory or send it to the server, and finally shut down your SensorService until it is invoked again later.
 
@@ -101,7 +101,7 @@ public class PingSensorService extends SensorService, PingReceiver
 
 A real example of a class that operates asynchronously (and thus requires a run loop to return its data to) is Android's LocationManager class. Check that out if you want more information, or look at the source code for the SensorService base class, which uses LocationManager (though another class called NetworkLocationRequest) to get the device's GPS coordinates. 
 
-## Adding your SensorService to the Android manifest file ##
+== Adding your SensorService to the Android manifest file ==
 
 After creating a SensorService, you must remember to add it to the Android manifest file! Otherwise, the Android OS will not be able to start it up. Here is the line in AndroidManifest.xml that adds the VolumeSensorService from the SenstasticDemo project:
 
