@@ -8,7 +8,7 @@ Senstastic is a lightweight framework for passive participatory sensing on Andro
 
 Checkout the SenstasticDemo Android project for a working example of a participatory sensing application called "Noise Mapping" built on the Senstastic framework. The easiest way to use the Senstastic client side is to understand the "Noise Mapping" demo and transform it to fit your needs.
 
-= How Does My Senstastic App Work?: The Complete Execution Flow =
+= How Does the SenstasticDemo Work? =
 
 # When the user's device boots up, the Android OS broadcasts a BOOT_COMPLETED intent.
 # Your BootCompletedReceiver class, defined in BootCompletedReceiver.java, receives the intent in its onReceive method.
