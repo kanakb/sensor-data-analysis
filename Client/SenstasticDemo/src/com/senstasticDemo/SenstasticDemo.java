@@ -36,7 +36,8 @@ public class SenstasticDemo extends Activity implements OnClickListener
         aboutButton.setOnClickListener(this);  
         
         // Start Senstastic. This should go in the BootCompletedReceiver eventually.
-        Senstastic.init("http://sensor-analysis.appspot.com/import");
+        String senstasticEndpointUrl = getString(R.string.senstastic_endpoint_url);
+        Senstastic.init(senstasticEndpointUrl);
         Senstastic.schedule(this, VolumeSensorService.class);
     }
     
