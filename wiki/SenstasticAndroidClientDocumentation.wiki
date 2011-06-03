@@ -142,7 +142,7 @@ public class PingSensorService extends SensorService, PingReceiver
 	
 	private void callback(int delayInMilliseconds)
 	{
-		finishSensing(delayInMilliseconds).
+		finishSensing(delayInMilliseconds);
 	}
 }
 
