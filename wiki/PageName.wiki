@@ -105,15 +105,19 @@ This is a fully functioning SensorService! There are three methods you will usua
   # getIntervalInSeconds() should return how frequently your SensorService should run. This example will run every hour, or 3,600 seconds.
   # sense() is the entry point of your SensorService. When Senstastic tells your SensorService to run at your specified interval, execution begins here.
 
-== Important notes about sensing ==
+== How do I finish sensing? ==
   
-Senstastic automatically runs your SensorService in its own thread, so any code you write in sense() will not block anything else in your application. When you are done sensing and have obtained your desired measurement, you must pass the measurement data to the Senstastic framework by calling finishSensing(data). This will attach metadata to your measurement, save it to persistent memory or send it to the server, and finally shut down your SensorService until it is invoked again later.
+When you are done sensing and have obtained your desired measurement, you must pass the measurement data to the Senstastic framework by calling finishSensing(data). This will attach metadata to your measurement, save it to persistent memory or send it to the server, and finally shut down your SensorService until it is invoked again later.
 
 finishSensing(data) can take in a variety of data types. It accepts any Java Object or primitive. Java primitives will automatically be converted into their corresponding objects (e.g. int -> Integer) by the JRE. Any custom object you pass in should be able to be converted to a string representation via its toString() method. This method belongs to all Java Objects. If you pass in a byte array (byte[]), the Senstastic framework will automatically Base64 encode your data for transport via XML to the Senstastic server (described later).
 
-If sense() returns, note that your SensorService and its thread will still be running until you call SensorService's finishSensing(data) method. It is imperitive that you call finishSensing(data) in order to save or send your measurement and stop the SensorService.
+== Does my sensing code block? ==
 
-The thread your SensorService runs in is a special kind of Android thread called a HandlerThread. This means the thread has a run loop and can support asynchronous operations. Thus, in sense(), you could start an asynchronous operation which finishes with a callback to a custom method you defined in SensorService. That custom method can then call finishSensing(data) to save or send your measurement and shut down the SensorService. Here's a pseudocode example:
+No. Senstastic automatically runs your SensorService in its own thread, so any code you write in sense() will not block anything else in your application. If sense() returns, note that your SensorService and its thread will still be running until you call SensorService's finishSensing(data) method. It is imperitive that you call finishSensing(data) in order to save or send your measurement and stop the SensorService.
+
+== Can I sense asynchronously? ==
+
+Yes. The thread your SensorService runs in is a special kind of Android thread called a HandlerThread. This means the thread has a run loop and can support asynchronous operations. Thus, in sense(), you can start an asynchronous operation which finishes with a callback to a custom method you defined in SensorService. That custom method can then call finishSensing(data) to save or send your measurement and shut down the SensorService. Here's a pseudocode example using a fake class called Ping that pings hosts asynchronously to illustrate asynchronous sensing:
 
 {{{
 
