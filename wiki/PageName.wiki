@@ -2,6 +2,8 @@
 
 = Introduction to the Senstastic Android Client =
 
+Written by Max Vujovic on June 2, 2011.
+
 Senstastic is a lightweight framework for passive participatory sensing on Android devices. It allows you to schedule your code to run in the background at a specified interval on users' devices. Your code will most likely use the device's built-in sensors in some way to generate measurement data. Senstastic will automatically augment your measurement data with additional metadata, including a geographic location (a latitude, longitude pair), the time, and additional device information. Senstastic will save the measurement data to the device until a WiFi connection becomes available. The device will then push the measurement data over a WiFi connection to your Senstastic server or any other web service you make to receive the measurements.
 
 Senstastic is designed to consume a minimum amount of power and send mostly anonymous measurements. Senstastic generates a random device ID that it sends attached to measurements. Unless someone knows a particular user has a particular Senstastic device ID, the measurement is essentially anonymous. The device ID is used so that users can look up statistics about themselves specifically, not just aggregate statistics.
