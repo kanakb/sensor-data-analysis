@@ -63,6 +63,10 @@ class GenericDataRetriever(webapp.RequestHandler):
         # start with everything (query isn't run until told to)
         q = Measurement.all()
         
+        # Uncomment to disable empty queries
+        #if len(elemDict) == 0:
+        #    return ''
+        
         # add device kinds
         if 'deviceKindList' in elemDict and elemDict['deviceKindList']:
             q = q.filter("deviceKind IN", elemDict['deviceKindList'])
