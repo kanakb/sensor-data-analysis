@@ -8,7 +8,7 @@ The Senstastic client is designed to consume a minimum amount of power and send 
 
 Note that in this document, we will sometimes call the Senstastic client-side framework as simply "Senstastic". We will also define the Senstastic framework to be all classes under the package com.senstastic.*.
 
-Note that the Senstastic framework is not extensively tested; we provide no guarantees, and you should use it at your own risk. However, we did our best to deliver clear, stable code and we do think Senstastic can be extremely useful as a foundation for participatory sensing applications.
+Note that the Senstastic framework is not extensively tested; we provide no guarantees, and you should use it at your own risk. However, we did our best to deliver clear, stable code and we do think Senstastic can be extremely useful as a foundation for participatory sensing applications. Our code is also well commented, so go ahead and explore the open source goodness!
 
 The Senstastic client was written by Max Vujovic. The Senstastic server-side was written by Kanak Biscuitwala. Both were written as research project in Spring 2011 under the guidance of Professor Giovanni Pau at UCLA.
 
@@ -149,7 +149,7 @@ public class PingSensorService extends SensorService, PingReceiver
 
 A real example of a class that operates asynchronously (and thus requires a run loop to return its data to) is Android's LocationManager class. Check that out if you want more information, or look at the source code for the SensorService base class, which uses LocationManager (though another class called NetworkLocationRequest) to get the device's GPS coordinates. 
 
-== Adding your SensorService to the Android manifest file ==
+== Why must I add my SensorService to the Android manifest file? ==
 
 After creating a SensorService, you must remember to add it to the Android manifest file! Otherwise, the Android OS will not be able to start it up. Here is the line in AndroidManifest.xml that adds the VolumeSensorService from the SenstasticDemo project:
 
@@ -204,11 +204,10 @@ You can use different methods of fetching the GPS location, perhaps from satelit
 == data ==
 Finally, data is the measurement data your SensorService created and passed to Senstastic by calling finishSensing(data). Senstastic represents numerical values as strings in the XML. If you passed a byte array representing binary data to finishSensing(data), Senstastic will automatically Base64 encode the binary data for safe insertion between the XML data tags.
 
-= Modifying the Senstastic Framework =
+= What should I know about modifying the Senstastic framework? =
 
-Senstastic is a lightweight framework, and you are welcome to modify the framework itself to fit your needs. If you do plan to modify the framework, there are few important items and design descisions we made that we would to point out. These points are not important if you plan on using the framework as is.
+Senstastic is a lightweight framework, and you are welcome to modify the framework itself to fit your specific needs. If you do plan to modify the framework, there are few important items and design descisions we made that we would to point out. These points are not as important if you plan on using the framework as is.
 
-  # TODO: Policy
   # Senstastic code uses the FileUtility wrapper class to access the file system. Senstastic creates a "measurements" directory for storing measurements that need to be sent later and a "device" directory to store the device ID Senstastic generates. Both directories are created on the device's internal storage.
   # When any Senstastic code accesses the file system for reading or writing data like the device ID or a measurement, it should the usage of the FileUtility class from any other part of the Senstastic system. Senstastic does this by creating a Java synchronized block using the FileUtility's static class member any time it's manipulating the file system via FileUtility. Here is an example from Senstastic's DeviceInfo class of locking up the file system via the FileUtility class while Senstastic accesses it:
   
