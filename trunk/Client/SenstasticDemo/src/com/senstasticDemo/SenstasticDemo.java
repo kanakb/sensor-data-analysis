@@ -4,6 +4,7 @@ import com.senstastic.DeviceInfo;
 import com.senstastic.Senstastic;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +17,13 @@ public class SenstasticDemo extends Activity implements OnClickListener
 	private Button personalMapButton;
 	private Button logButton;
 	private Button aboutButton;
+	
+	public static void initSenstastic(Context context)
+	{
+        String senstasticEndpointUrl = context.getString(R.string.senstastic_endpoint_url);
+        Senstastic.init(senstasticEndpointUrl);
+        Senstastic.schedule(context, VolumeSensorService.class);
+	}
 	
     public void onCreate(Bundle savedInstanceState) 
     {
@@ -35,10 +43,9 @@ public class SenstasticDemo extends Activity implements OnClickListener
         aboutButton = (Button)findViewById(R.id.menuViewAboutButton);
         aboutButton.setOnClickListener(this);  
         
-        // Start Senstastic. This should go in the BootCompletedReceiver eventually.
-        String senstasticEndpointUrl = getString(R.string.senstastic_endpoint_url);
-        Senstastic.init(senstasticEndpointUrl);
-        Senstastic.schedule(this, VolumeSensorService.class);
+        // If the user has just downloaded the app and started it for the first time, start Senstastic here. Otherwise, Senstastic will be launched when the device boots up, and shouldn't be relaunched here when the user opens the app again.
+        if (Senstastic.isFirstLaunch(this))
+        	initSenstastic(this);
     }
     
     public void onClick(View view)
