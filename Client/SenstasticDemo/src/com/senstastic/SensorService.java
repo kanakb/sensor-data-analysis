@@ -37,7 +37,7 @@ public class SensorService extends Service implements LocationReceiver
 	
 	private static final String WAKE_LOCK_TAG = "SensorService";
 	
-	private volatile WakeLock wakeLock;
+	private WakeLock wakeLock;
 	private HandlerThread handlerThread;
 	private Looper handlerThreadLooper;
 	private Object data;

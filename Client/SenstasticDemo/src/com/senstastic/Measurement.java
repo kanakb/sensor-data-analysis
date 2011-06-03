@@ -64,7 +64,7 @@ public class Measurement
 	 */
 	private String getXmlString()
 	{
-		XMLStringGenerator gen = new XMLStringGenerator();
+		XmlStringGenerator gen = new XmlStringGenerator();
 		gen.begin("measurements");
 			gen.startTag("measurement");
 				gen.addTag("deviceId", deviceId);
@@ -132,11 +132,6 @@ public class Measurement
 	 */
 	private static void sendXMLString(String xmlString)
 	{
-		/*
-		SendXMLStringTask sendXmlStringTask = new SendXMLStringTask();
-		sendXmlStringTask.execute(xmlString);
-		*/
-		
 	    try 
 	    {
 	    	// Build the POST data.
