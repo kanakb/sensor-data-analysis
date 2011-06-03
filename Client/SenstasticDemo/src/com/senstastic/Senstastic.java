@@ -42,4 +42,10 @@ public class Senstastic
         AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis(), interval*1000, pendingIntent);
 	}
+	
+	public static boolean isFirstLaunch(Context context)
+	{
+		// If Senstatic has not yet created a Senstastic device id, this must be the first launch.
+		return DeviceInfo.getSavedDeviceId(context) == null;
+	}
 }
