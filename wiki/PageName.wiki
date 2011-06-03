@@ -1,10 +1,10 @@
-#summary This page describes how to use the Android client side of the Senstastic framework to fit your needs.
+#summary This page describes how to use the Android client side of the Senstastic framework to start building a participatory sensing application.
 
-= Introduction to the Senstastic Android Client =
+= What is the Senstastic Android client? =
 
 Senstastic is a lightweight framework for passive participatory sensing on Android devices. It allows you to schedule your code to run in the background at a specified interval on users' devices. Your code will most likely use the device's built-in sensors in some way to generate measurement data. Senstastic will automatically augment your measurement data with additional metadata, including a geographic location (a latitude, longitude pair), the time, and additional device information. Senstastic will save the measurement data to the device until a WiFi connection becomes available. The device will then push the measurement data over a WiFi connection to your Senstastic server or any other web service you make to receive the measurements.
 
-Senstastic is designed to consume a minimum amount of power and send mostly anonymous measurements. Senstastic generates a random device ID that it sends attached to measurements. Unless someone knows a particular user has a particular Senstastic device ID, the measurement is essentially anonymous. The device ID is used so that users can look up statistics about themselves specifically, not just aggregate statistics.
+The Senstastic client is designed to consume a minimum amount of power and send mostly anonymous measurements. Senstastic generates a random device ID that it sends attached to measurements. Unless someone knows a particular user has a particular Senstastic device ID, the measurement is essentially anonymous. The device ID is used so that users can look up statistics about themselves specifically, not just aggregate statistics.
 
 Note that in this document, we will sometimes call the Senstastic client-side framework as simply "Senstastic". We will also define the Senstastic framework to be all classes under the package com.senstastic.*.
 
@@ -14,7 +14,7 @@ The Senstastic client was written by Max Vujovic. The Senstastic server-side was
 
 If you have any questions about the Senstastic client, ask the guy who wrote it by emailing maxvujovic at gmail dot com.
 
-= Getting Started =
+= How do I get started? =
 
 SVN checkout the SenstasticDemo Android project for a working example of a participatory sensing application called "Noise Mapping" built on the Senstastic framework. The easiest way to use the Senstastic client side is to understand the SenstasticDemo project and transform it to fit your needs.
 
