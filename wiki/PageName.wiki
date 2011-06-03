@@ -99,7 +99,7 @@ public class SimpleSensorService extends SensorService
 
 }}}
 
-This is a fully functioning SensorService! Granted, it always measures "123". There are three methods you will usually override.
+This is a fully functioning SensorService! Granted, it always measures "123". This example shows the three methods you will usually override.
 
   # getSensorKind() should return the name of your sensor as you wish it to be called. The name of your sensor will be attached to measurements you send to the Senstastic server.
   # getIntervalInSeconds() should return how frequently your SensorService should run. This example will run every hour, or 3,600 seconds.
