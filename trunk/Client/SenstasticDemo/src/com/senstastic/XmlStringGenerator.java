@@ -7,7 +7,7 @@ import org.xmlpull.v1.XmlSerializer;
 import android.util.Base64;
 import android.util.Xml;
 
-public class XMLStringGenerator 
+public class XmlStringGenerator 
 {
 	StringWriter stringWriter;
 	XmlSerializer xmlSerializer;
