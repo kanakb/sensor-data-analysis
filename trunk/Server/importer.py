@@ -28,7 +28,14 @@ class Importer(webapp.RequestHandler):
         try:
             # Intialize a tree with the input XML
             measXML = self.request.get('xml')
-            measurements = fromstring(measXML).getchildren()
+            m1 = fromstring(measXML)
+            
+            # support taking in single or multiple measurements
+            measurements = []
+            if m1.tag == 'measurement':
+                measurements.append(m1)
+            else:
+                measurements = m1.getchildren()
             
             # Insert each measurement into the datastore
             for m in measurements:
