@@ -32,7 +32,7 @@ class HeatgridRefresher(webapp.RequestHandler):
         }
         form_fields['xml'] = xmlreq
         form_data = urllib.urlencode(form_fields)
-        result = urlfetch.fetch(url='http://sensor-analysis.appspot.com/heatgridGen',
+        result = urlfetch.fetch(url='http://[YOUR-DOMAIN-HERE].appspot.com/heatgridGen',
                     payload=form_data,
                     method=urlfetch.POST,
                     headers={'Content-Type': 'application/x-www-form-urlencoded'})
