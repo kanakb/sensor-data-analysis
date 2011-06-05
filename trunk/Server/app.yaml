@@ -1,4 +1,4 @@
-application: sensor-analysis
+application: YOUR_APPNAME_HERE
 version: 1
 runtime: python
 api_version: 1
@@ -18,14 +18,24 @@ handlers:
   script: refreshHeatgrid.py
 - url: /cleardata
   script: test_tools/cleardata.py
+  secure: always
+  login: admin
 - url: /createPoints
   script: test_tools/createPoints.py
+  secure: always
+  login: admin
 - url: /insert
   script: test_tools/insert.py
+  secure: always
+  login: admin
 - url: /extract
   script: test_tools/extract.py
+  secure: always
+  login: admin
 - url: /extractAggregate
   script: test_tools/extractAggregate.py
+  secure: always
+  login: admin
 - url: /s
   static_dir: static
 - url: /.*
