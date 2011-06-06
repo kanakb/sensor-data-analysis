@@ -49,6 +49,7 @@ class HeatgridGenerator(webapp.RequestHandler):
             self.response.out.write("FAILURE")
     def processHeatgrid(self, measXML, xDim, yDim):
         # convert input XML to raw data
+        measXML = measXML.lstrip()
         measInput = fromstring(measXML).getchildren()
         
         xDim = int(xDim)

@@ -38,6 +38,7 @@ class GenericDataRetriever(webapp.RequestHandler):
     def generateResponse(self, measXML):
         try:
             # Intialize a tree with the input XML
+            measXML = measXML.lstrip()
             measurements = fromstring(measXML).getchildren()
             
             # print results for each measurement
