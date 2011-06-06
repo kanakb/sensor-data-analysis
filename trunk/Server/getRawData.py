@@ -39,7 +39,14 @@ class GenericDataRetriever(webapp.RequestHandler):
         try:
             # Intialize a tree with the input XML
             measXML = measXML.lstrip()
-            measurements = fromstring(measXML).getchildren()
+            m1 = fromstring(measXML)
+            
+            # support taking in single or multiple measurements
+            measurements = []
+            if m1.tag == 'measurement':
+                measurements.append(m1)
+            else:
+                measurements = m1.getchildren()
             
             # print results for each measurement
             resp = '<?xml version="1.0" encoding="UTF-8"?>\n'
