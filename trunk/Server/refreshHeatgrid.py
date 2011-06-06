@@ -1,8 +1,7 @@
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
-from google.appengine.api import urlfetch
 
-import urllib
+from heatgridGen import HeatgridGenerator
 
 class HeatgridRefresher(webapp.RequestHandler):
     # Generate a new heatgrid (intended to be a cron job)
@@ -30,12 +29,14 @@ class HeatgridRefresher(webapp.RequestHandler):
             "xDim": "20",
             "yDim": "20"
         }
-        form_fields['xml'] = xmlreq
+        '''form_fields['xml'] = xmlreq
         form_data = urllib.urlencode(form_fields)
         result = urlfetch.fetch(url='http://[YOUR-DOMAIN-HERE].appspot.com/heatgridGen',
                     payload=form_data,
                     method=urlfetch.POST,
-                    headers={'Content-Type': 'application/x-www-form-urlencoded'})
+                    headers={'Content-Type': 'application/x-www-form-urlencoded'})'''
+        g = HeatgridGenerator()
+        g.processHeatgrid(xmlreq, form_fields['xDim'], form_fields['yDim'])
         
 
 application = webapp.WSGIApplication(
