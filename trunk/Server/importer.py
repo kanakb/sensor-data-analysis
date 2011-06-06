@@ -28,6 +28,7 @@ class Importer(webapp.RequestHandler):
         try:
             # Intialize a tree with the input XML
             measXML = self.request.get('xml')
+            measXML = measXML.lstrip()
             m1 = fromstring(measXML)
             
             # support taking in single or multiple measurements
