@@ -56,7 +56,6 @@ public class Measurement
 		this.data = data;
 	}
 	
-	// TODO: Ask Kanak to support measurement tag.
 	/*
 	 * This method encodes the measurement as an XML string.
 	 * This XML string may be saved in a file for later sending, or
@@ -65,16 +64,14 @@ public class Measurement
 	private String getXmlString()
 	{
 		XmlStringGenerator gen = new XmlStringGenerator();
-		gen.begin("measurements");
-			gen.startTag("measurement");
-				gen.addTag("deviceId", deviceId);
-				gen.addTag("deviceKind", deviceKind);
-				gen.addTag("sensorKind", sensorKind);
-				gen.addTag("time", time);
-				gen.addTag("latitude", latitude);
-				gen.addTag("longitude", longitude);
-				gen.addTag("data", data);
-			gen.endTag("measurement");
+		gen.begin("measurement");
+			gen.addTag("deviceId", deviceId);
+			gen.addTag("deviceKind", deviceKind);
+			gen.addTag("sensorKind", sensorKind);
+			gen.addTag("time", time);
+			gen.addTag("latitude", latitude);
+			gen.addTag("longitude", longitude);
+			gen.addTag("data", data);
 		return gen.end();
 	}
 	
