@@ -55,12 +55,13 @@ public class SenstasticDemo extends Activity implements OnClickListener
     	if (view == aggregateMapButton)
     	{
     		intent.setClass(this, MapActivity.class);
-    		intent.putExtra("url", "http://sensor-analysis.appspot.com/s/heatgrid.html?dataUrl=heatgrid.xml&zoom=13&colors=00FF00,FFCC00,FF0000");
+    		intent.putExtra("mapUrl", "http://sensor-analysis.appspot.com/s/heatgrid.html?dataUrl=heatgrid.xml&zoom=13&colors=00FF00,FFCC00,FF0000");
     	}
     	else if (view == personalMapButton)
     	{
     		intent.setClass(this, MapActivity.class);
-    		intent.putExtra("url", "http://sensor-analysis.appspot.com/s/heatgrid.html?dataUrl=heatgrid.xml?id=" + DeviceInfo.getDeviceId(this) + "&zoom=13&colors=00FF00,FFCC00,FF0000");
+    		intent.putExtra("refreshDataUrl", "http://sensor-analysis.appspot.com/refreshHeatgrid?id=" + DeviceInfo.getDeviceId(this));
+    		intent.putExtra("mapUrl", "http://sensor-analysis.appspot.com/s/heatgrid.html?dataUrl=heatgrid.xml?id=" + DeviceInfo.getDeviceId(this) + "&zoom=13&colors=00FF00,FFCC00,FF0000");
     	}
     	else if (view == logButton)
     	{
